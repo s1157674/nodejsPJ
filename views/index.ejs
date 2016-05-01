@@ -12,6 +12,82 @@
 <%}else{%>
 <button type="button" class="btn btn-success btn-lg" id="showCreateModelBtn" data-toggle="modal" data-target="#createModal">Create Resaurant</button>
 
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Search By Keywords</h3>
+    </div>
+    <div class="panel-body">
+        <form class="form-inline">
+            <div class="form-group">
+                <label class="sr-only" for="search_name">Name</label>
+                <input type="text" class="form-control" id="search_name" placeholder="Name">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="search_cuisine">Cuisine</label>
+                <input type="text" class="form-control" id="search_cuisine" placeholder="Cuisine">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="search_borough">Borough</label>
+                <input type="text" class="form-control" id="search_borough" placeholder="Borough">
+            </div>
+        </form>
+
+        <form class="form-inline">
+            <div class="form-group">
+                <label class="sr-only" for="search_building">Building</label>
+                <input type="text" class="form-control" id="search_building" placeholder="Building">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="search_zipcode">Zipcode</label>
+                <input type="text" class="form-control" id="search_zipcode" placeholder="Zipcode">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="search_street">Street</label>
+                <input type="text" class="form-control" id="search_street" placeholder="Street">
+            </div>
+        </form>
+        <form class="form-inline">
+            <div class="form-group">
+                <label class="sr-only" for="search_restaurantId">Restaurant ID</label>
+                <input type="text" class="form-control" id="search_restaurantId" placeholder="Restaurant ID">
+            </div>
+            <div class="form-group">
+                <label for="sort">Sort By:</label>
+                <select class="form-control" id="sort">
+                    <option value="name">Name</option>
+                    <option value="cuisine">Cuisine</option>
+                    <option value="borough">Borough</option>
+                    <option value="building">Building</option>
+                    <option value="zipcode">Zipcode</option>
+                    <option value="street">Street</option>
+                    <option value="score">Score</option>
+                    <option value="restaurant_id">Restaurant ID</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="direction"></label>
+                <select class="form-control" id="direction">
+                    <option value="1">Ascending</option>
+                    <option value="-1">Descending</option>
+                </select>
+            </div>
+        </form>
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="display">Display:</label>
+                <select class="form-control" id="display">
+                    <option value="100" selected>100</option>
+                    <option value="500">500</option>
+                    <option value="1000">1000</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+
 <!-- Modal -->
 <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -69,7 +145,7 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <input type="hidden" id="old_edit_restaurant_id" value="">
+                    <input type="hidden" id="edit_id" value="">
                     <label for="edit_borough">Borough</label>
                     <input type="text" class="form-control" id="edit_borough" placeholder="">
                     <label for="edit_cuisine">Cuisine</label>
@@ -77,7 +153,7 @@
                     <label for="edit_name">Name</label>
                     <input type="text" class="form-control" id="edit_name" placeholder="">
                     <label for="edit_restaurant_id">Restaurant ID</label>
-                    <input type="text" class="form-control" id="edit_restaurant_id" placeholder="" disabled >
+                    <input type="text" class="form-control" id="edit_restaurant_id" placeholder="">
                     <div class="panel panel-default" style="margin-top:10px;">
                         <div class="panel-heading">
                             <h3 class="panel-title">Address</h3>
@@ -115,7 +191,7 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <input type="hidden" id="old_delete_restaurant_id" value="">
+                    <input type="hidden" id="delete_id" value="">
                     <label for="delete_borough">Borough</label>
                     <input type="text" class="form-control" id="delete_borough" placeholder="" disabled>
                     <label for="delete_cuisine">Cuisine</label>
@@ -166,23 +242,23 @@
             <tbody>
 
             <% for (var i = 0; i < result.length; i++) {
-                var avgScore = 0;
-                result[i].grades.forEach(function (grade) {
-                    avgScore += grade.score;
-                })
-                if(result[i].grades.length==0){
-                    avgScore= 'N/A';
-                }else {
-                    avgScore /= result[i].grades.length;
-                    avgScore=avgScore.toFixed(2)
-                }
+//                var avgScore = 0;
+//                result[i].grades.forEach(function (grade) {
+//                    avgScore += grade.score;
+//                })
+//                if(result[i].grades.length==0){
+//                    avgScore= 'N/A';
+//                }else {
+//                    avgScore /= result[i].grades.length;
+//                    avgScore=avgScore.toFixed(2)
+//                }
 
             %>
-            <tr id="r<%= result[i].restaurant_id %>" data-restaurant_id="<%= result[i].restaurant_id %>">
+            <tr id="r<%= result[i]._id %>" data-_id="<%= result[i]._id %>">
                 <th scope="row"><%= result[i].name %></th>
                 <td><%= result[i].cuisine %></td>
                 <td><%= result[i].borough %></td>
-                <td><%= avgScore %></td>
+                <td><%= result[i].avgScore %></td>
                 <td>
                     <button type="button" class="btn btn-info">Read Deatils</button>
                 </td>
@@ -236,13 +312,23 @@
                 success: function(data,status){
                     if (status = !'success') {
                         $('#create_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
-                        return;
-                    }
-                    if (data.errorMessages != null) {
-                        $('#create_errorMessage').text(data.errorMessages).fadeIn();
                         button.button('reset');
                         return;
                     }
+
+                    if (data.errorMessages != null) {
+                        if (data.errors != null) {
+                            data.errorMessages+='</br></br>'
+                            for (var key in data.errors) {
+                                var error = data.errors[key];
+                                data.errorMessages+=error.path+' : '+error.kind+'</br>';
+                            }
+                        }
+                        $('#create_errorMessage').html(data.errorMessages).fadeIn();
+                        button.button('reset');
+                        return;
+                    }
+
                     console.log(data);
                     $('#create_errorMessage').fadeOut();
                     $('#create_successMessage').fadeIn();
@@ -264,9 +350,9 @@
 
         $('.showEditModelBtn').click(function () {
             var button = $(this);
-            var restaurant_id = button.closest("tr").data('restaurant_id');
+            var _id = button.closest("tr").data('_id');
             button.button('loading');
-            $.get("rest/restaurant/" + restaurant_id,
+            $.get("rest/restaurant/" + _id,
                     {},
                     function (data, status) {
                         button.button('reset');
@@ -279,14 +365,17 @@
                             alert(data.errorMessage);
                             return;
                         }
-
+                        if (data.result == null) {
+                            alert("Not Found");
+                            return;
+                        }
 
                         //  console.log(data);
                         var modal = $(this);
                         $('.modal-body #edit_borough').val(data.result.borough);
                         $('.modal-body #edit_cuisine').val(data.result.cuisine);
                         $('.modal-body #edit_name').val(data.result.name);
-                        $('.modal-body #old_edit_restaurant_id').val(data.result.restaurant_id);
+                        $('.modal-body #edit_id').val(data.result._id);
                         $('.modal-body #edit_restaurant_id').val(data.result.restaurant_id);
                         $('.modal-body #edit_building').val(data.result.address.building);
                         $('.modal-body #edit_zipcode').val(data.result.address.zipcode);
@@ -309,6 +398,7 @@
             var button = $(this);
             button.button('loading');
             var j={};
+            j._id= $('.modal-body #edit_id').val();
             j.borough= $('.modal-body #edit_borough').val();
             j.cuisine= $('.modal-body #edit_cuisine').val();
             j.name= $('.modal-body #edit_name').val();
@@ -326,21 +416,31 @@
                 type: 'PUT',
                 dataType: 'json',
                 contentType: "application/json",
-                url: "rest/restaurant/"+$('.modal-body #old_edit_restaurant_id').val(), // A valid URL
+                url: "rest/restaurant/"+$('.modal-body #edit_id').val(),
                 data: JSON.stringify(j),
                 success: function(data,status){
                     if (status = !'success') {
                         $('#edit_successMessage').fadeOut();
                         $('#edit_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
+                        button.button('reset');
                         return;
                     }
                     if (data.errorMessages != null) {
+                        if (data.errors != null) {
+                            data.errorMessages+='</br></br>'
+                            for (var key in data.errors) {
+                                var error = data.errors[key];
+                                data.errorMessages+=error.path+' : '+error.kind+'</br>';
+                            }
+                        }
+
                         $('#edit_successMessage').fadeOut();
-                        $('#edit_errorMessage').text(data.errorMessages).fadeIn();
+                        $('#edit_errorMessage').html(data.errorMessages).fadeIn();
+                        button.button('reset');
                         return;
                     }
 
-                    var tr=$('#r'+$('.modal-body #old_edit_restaurant_id').val());
+                    var tr=$('#r'+$('.modal-body #edit_id').val());
                     tr.find("th").eq(0).text(data.result.name);
                     tr.find("td").eq(0).text(data.result.cuisine);
                     tr.find("td").eq(1).text(data.result.borough);
@@ -362,9 +462,9 @@
 
         $('.showDeleteModelBtn').click(function () {
             var button = $(this);
-            var restaurant_id = button.closest("tr").data('restaurant_id');
+            var _id = button.closest("tr").data('_id');
             button.button('loading');
-            $.get("rest/restaurant/" + restaurant_id,
+            $.get("rest/restaurant/" + _id,
                     {},
                     function (data, status) {
                         button.button('reset');
@@ -378,13 +478,17 @@
                             return;
                         }
 
+                        if (data.result == null) {
+                            alert("Not Found");
+                            return;
+                        }
 
                         //  console.log(data);
                         var modal = $(this);
                         $('.modal-body #delete_borough').val(data.result.borough);
                         $('.modal-body #delete_cuisine').val(data.result.cuisine);
                         $('.modal-body #delete_name').val(data.result.name);
-                        $('.modal-body #old_delete_restaurant_id').val(data.result.restaurant_id);
+                        $('.modal-body #delete_id').val(data.result._id);
                         $('.modal-body #delete_restaurant_id').val(data.result.restaurant_id);
                         $('.modal-body #delete_building').val(data.result.address.building);
                         $('.modal-body #delete_zipcode').val(data.result.address.zipcode);
@@ -413,22 +517,24 @@
                 type: 'DELETE',
                 dataType: 'json',
                 contentType: "application/json",
-                url: "rest/restaurant/"+$('.modal-body #old_delete_restaurant_id').val(),
+                url: "rest/restaurant/"+$('.modal-body #delete_id').val(),
                 success: function(data,status){
                     if (status = !'success') {
                         $('#delete_successMessage').fadeOut();
                         $('#delete_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
+                        button.button('reset');
                         return;
                     }
                     if (data.errorMessages != null) {
                         $('#delete_successMessage').fadeOut();
                         $('#delete_errorMessage').text(data.errorMessages).fadeIn();
+                        button.button('reset');
                         return;
                     }
 
                     $('#delete_errorMessage').fadeOut();
                     $('#delete_successMessage').fadeIn();
-                    $('#r'+$('.modal-body #old_delete_restaurant_id').val()).remove();
+                    $('#r'+$('.modal-body #delete_id').val()).remove();
                     button.button('reset');
                     button.hide();
                 }

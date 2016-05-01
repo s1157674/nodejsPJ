@@ -2,23 +2,24 @@ var mongoose = require('mongoose');
 
 
 var gradeSchema = mongoose.Schema({
-    date: Date,
-    grade: String,
-    score: Number
+    date: { type: Date, default: Date.now },
+    grade: {type: String,required: true, minLength: 1, maxLength: 5},
+    score: {type: Number,required: true, min: 0 }
 },{ _id : false });
 
 var restaurantSchema = mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     address: {
-        building: String,
-        coord: [Number],
-        street: String,
-        zipcode: String
+        building: {type: String,required: true, minlength: 1, maxlength: 100},
+        coord: [ {type: Number,required: true}],
+        street: {type: String,required: true, minlength: 1, maxlength: 100},
+        zipcode: {type: String,required: true, minlength: 1, maxlength: 20}
     },
-    borough: String,
-    cuisine: String,
+    borough: {type: String,required: true, minlength: 1, maxlength: 100},
+    cuisine: {type: String, required: true, minlength: 1, maxlength: 200},
     grades: [gradeSchema],
-    name: String,
-    restaurant_id: String
+    name: {type: String, required: true, minlength: 1, maxlength: 200},
+    restaurant_id: {type: String, required: true, minlength: 1, maxlength: 20}
 });
 
 //module.exports = restaurantSchema;
