@@ -1,0 +1,444 @@
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+
+<% if(errorMessages!=null){%>
+    <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        <%= errorMessages %>
+</div>
+<%}else{%>
+<button type="button" class="btn btn-success btn-lg" id="showCreateModelBtn" data-toggle="modal" data-target="#createModal">Create Resaurant</button>
+
+<!-- Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Create Resaurant</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label for="input_borough">Borough</label>
+                    <input type="text" class="form-control" id="input_borough" placeholder="">
+                    <label for="input_cuisine">Cuisine</label>
+                    <input type="text" class="form-control" id="input_cuisine" placeholder="">
+                    <label for="input_name">Name</label>
+                    <input type="text" class="form-control" id="input_name" placeholder="">
+                    <label for="input_restaurant_id">Restaurant ID (Cannot Edit)</label>
+                    <input type="text" class="form-control" id="input_restaurant_id" placeholder="">
+                    <div class="panel panel-default" style="margin-top:10px;">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Address</h3>
+                        </div>
+                        <div class="panel-body">
+                            <label for="input_building">Building</label>
+                            <input type="text" class="form-control" id="input_building" placeholder="">
+                            <label for="input_zipcode">Zipcode</label>
+                            <input type="text" class="form-control" id="input_zipcode" placeholder="">
+                            <label for="input_street">Street</label>
+                            <input type="text" class="form-control" id="input_street" placeholder="">
+                            <label for="input_coord">Coord</label>
+                            <input type="text" class="form-control" id="input_coord_x" placeholder="X">
+                            <input type="text" class="form-control" id="input_coord_y" placeholder="Y">
+                        </div>
+                    </div>
+                    <input type="reset" id="createModalResetBtn" class="btn btn-default" value="Reset"/>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="alert alert-success" id="create_successMessage" role="alert" style="text-align:left">Create Success</div>
+                <div class="alert alert-danger" id="create_errorMessage" role="alert" style="text-align:left"></div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="createModalSubmut">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="edit_ModalLabel">Edit Resaurant</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="old_edit_restaurant_id" value="">
+                    <label for="edit_borough">Borough</label>
+                    <input type="text" class="form-control" id="edit_borough" placeholder="">
+                    <label for="edit_cuisine">Cuisine</label>
+                    <input type="text" class="form-control" id="edit_cuisine" placeholder="">
+                    <label for="edit_name">Name</label>
+                    <input type="text" class="form-control" id="edit_name" placeholder="">
+                    <label for="edit_restaurant_id">Restaurant ID</label>
+                    <input type="text" class="form-control" id="edit_restaurant_id" placeholder="" disabled >
+                    <div class="panel panel-default" style="margin-top:10px;">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Address</h3>
+                        </div>
+                        <div class="panel-body">
+                            <label for="edit_building">Building</label>
+                            <input type="text" class="form-control" id="edit_building" placeholder="">
+                            <label for="edit_zipcode">Zipcode</label>
+                            <input type="text" class="form-control" id="edit_zipcode" placeholder="">
+                            <label for="edit_street">Street</label>
+                            <input type="text" class="form-control" id="edit_street" placeholder="">
+                            <label for="edit_coord">Coord</label>
+                            <input type="text" class="form-control" id="edit_coord_x" placeholder="X">
+                            <input type="text" class="form-control" id="edit_coord_y" placeholder="Y">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="alert alert-success" id="edit_successMessage" role="alert" style="text-align:left">Update Success</div>
+                <div class="alert alert-danger" id="edit_errorMessage" role="alert" style="text-align:left"></div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="editModalSubmut" class="btn btn-warning">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="delete_ModalLabel">Delete Resaurant</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="old_delete_restaurant_id" value="">
+                    <label for="delete_borough">Borough</label>
+                    <input type="text" class="form-control" id="delete_borough" placeholder="" disabled>
+                    <label for="delete_cuisine">Cuisine</label>
+                    <input type="text" class="form-control" id="delete_cuisine" placeholder="" disabled>
+                    <label for="delete_name">Name</label>
+                    <input type="text" class="form-control" id="delete_name" placeholder="" disabled>
+                    <label for="delete_restaurant_id">Restaurant ID</label>
+                    <input type="text" class="form-control" id="delete_restaurant_id" placeholder="" disabled >
+                    <div class="panel panel-default" style="margin-top:10px;">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Address</h3>
+                        </div>
+                        <div class="panel-body">
+                            <label for="delete_building">Building</label>
+                            <input type="text" class="form-control" id="delete_building" placeholder="" disabled>
+                            <label for="delete_zipcode">Zipcode</label>
+                            <input type="text" class="form-control" id="delete_zipcode" placeholder="" disabled>
+                            <label for="delete_street">Street</label>
+                            <input type="text" class="form-control" id="delete_street" placeholder="" disabled>
+                            <label for="delete_coord">Coord</label>
+                            <input type="text" class="form-control" id="delete_coord_x" placeholder="X" disabled>
+                            <input type="text" class="form-control" id="delete_coord_y" placeholder="Y" disabled>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="alert alert-success" id="delete_successMessage" role="alert" style="text-align:left">Delete Success</div>
+                <div class="alert alert-danger" id="delete_errorMessage" role="alert" style="text-align:left"></div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="deleteModalSubmut" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Cuisine</th>
+                <th>Borough</th>
+                <th>Score</th>
+                <th>Read Deatils</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <% for (var i = 0; i < result.length; i++) {
+                var avgScore = 0;
+                result[i].grades.forEach(function (grade) {
+                    avgScore += grade.score;
+                })
+                if(result[i].grades.length==0){
+                    avgScore= 'N/A';
+                }else {
+                    avgScore /= result[i].grades.length;
+                }
+
+            %>
+            <tr id="r<%= result[i].restaurant_id %>" data-restaurant_id="<%= result[i].restaurant_id %>">
+                <th scope="row"><%= result[i].name %></th>
+                <td><%= result[i].cuisine %></td>
+                <td><%= result[i].borough %></td>
+                <td><%= avgScore.toFixed(2) %></td>
+                <td>
+                    <button type="button" class="btn btn-info">Read Deatils</button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-warning showEditModelBtn">Update
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger showDeleteModelBtn">Delete</button>
+                </td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+<% } %>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('#showCreateModelBtn').click(function () {
+            $("#createModalResetBtn").click();
+            $('#create_successMessage').hide();
+            $('#create_errorMessage').text('').hide();
+            $('#createModalSubmut').show();
+        });
+        $('#createModalSubmut').click(function () {
+            var button = $(this);
+            button.button('loading');
+            var j={};
+            j.borough= $('.modal-body #input_borough').val();
+            j.cuisine= $('.modal-body #input_cuisine').val();
+            j.name= $('.modal-body #input_name').val();
+            j.restaurant_id= $('.modal-body #input_restaurant_id').val();
+            j.address = {};
+            j.address.building= $('.modal-body #input_building').val();
+            j.address.coord=[];
+            j.address.coord[0]= $('.modal-body #input_coord_x').val();
+            j.address.coord[1]= $('.modal-body #input_coord_y').val();
+            j.address.street = $('.modal-body #input_street').val();
+            j.address.zipcode= $('.modal-body #input_zipcode').val();
+
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: "application/json",
+                url: "rest/restaurant/create",
+                data: JSON.stringify(j),
+                success: function(data,status){
+                    if (status = !'success') {
+                        $('#create_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
+                        return;
+                    }
+                    if (data.errorMessages != null) {
+                        $('#create_errorMessage').text(data.errorMessages).fadeIn();
+                        button.button('reset');
+                        return;
+                    }
+                    console.log(data);
+                    $('#create_errorMessage').fadeOut();
+                    $('#create_successMessage').fadeIn();
+//                    var tr=$('#r'+$('.modal-body #old_edit_restaurant_id').val());
+//                    tr.find("th").eq(0).text(data.result.name);
+//                    tr.find("td").eq(0).text(data.result.cuisine);
+//                    tr.find("td").eq(1).text(data.result.borough);
+
+                    button.button('reset');
+                    button.hide();
+                }
+            }).fail(function () {
+                $('#create_errorMessage').fadeOut(100, function() {
+                    $('#create_errorMessage').text('Network Error').fadeIn();
+                });
+                button.button('reset');
+            });
+        });
+
+        $('.showEditModelBtn').click(function () {
+            var button = $(this);
+            var restaurant_id = button.closest("tr").data('restaurant_id');
+            button.button('loading');
+            $.get("rest/restaurant/" + restaurant_id,
+                    {},
+                    function (data, status) {
+                        button.button('reset');
+
+                        if (status = !'success') {
+                            alert('AJAX HTTP STATUS FAIL');
+                            return;
+                        }
+                        if (data.errorMessage != null) {
+                            alert(data.errorMessage);
+                            return;
+                        }
+
+
+                        //  console.log(data);
+                        var modal = $(this);
+                        $('.modal-body #edit_borough').val(data.result.borough);
+                        $('.modal-body #edit_cuisine').val(data.result.cuisine);
+                        $('.modal-body #edit_name').val(data.result.name);
+                        $('.modal-body #old_edit_restaurant_id').val(data.result.restaurant_id);
+                        $('.modal-body #edit_restaurant_id').val(data.result.restaurant_id);
+                        $('.modal-body #edit_building').val(data.result.address.building);
+                        $('.modal-body #edit_zipcode').val(data.result.address.zipcode);
+                        $('.modal-body #edit_street').val(data.result.address.street);
+                        $('.modal-body #edit_coord_x').val(data.result.address.coord[0]);
+                        $('.modal-body #edit_coord_y').val(data.result.address.coord[1]);
+
+
+                        $('#edit_successMessage').hide();
+                        $('#edit_errorMessage').text('').hide();
+                        $('#editModal').modal("show")
+
+                    }).fail(function () {
+                alert('AJAX HTTP STATUS FAIL');
+                button.button('reset');
+            });
+
+        })
+        $('#editModalSubmut').click(function () {
+            var button = $(this);
+            button.button('loading');
+            var j={};
+            j.borough= $('.modal-body #edit_borough').val();
+            j.cuisine= $('.modal-body #edit_cuisine').val();
+            j.name= $('.modal-body #edit_name').val();
+            j.restaurant_id= $('.modal-body #edit_restaurant_id').val();
+            j.address = {};
+            j.address.building= $('.modal-body #edit_building').val();
+            j.address.coord=[];
+            j.address.coord[0]= $('.modal-body #edit_coord_x').val();
+            j.address.coord[1]= $('.modal-body #edit_coord_y').val();
+            j.address.street = $('.modal-body #edit_street').val();
+            j.address.zipcode= $('.modal-body #edit_zipcode').val();
+
+
+            $.ajax({
+                type: 'PUT',
+                dataType: 'json',
+                contentType: "application/json",
+                url: "rest/restaurant/"+$('.modal-body #old_edit_restaurant_id').val(), // A valid URL
+                data: JSON.stringify(j),
+                success: function(data,status){
+                    if (status = !'success') {
+                        $('#edit_successMessage').fadeOut();
+                        $('#edit_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
+                        return;
+                    }
+                    if (data.errorMessages != null) {
+                        $('#edit_successMessage').fadeOut();
+                        $('#edit_errorMessage').text(data.errorMessages).fadeIn();
+                        return;
+                    }
+
+                    var tr=$('#r'+$('.modal-body #old_edit_restaurant_id').val());
+                    tr.find("th").eq(0).text(data.result.name);
+                    tr.find("td").eq(0).text(data.result.cuisine);
+                    tr.find("td").eq(1).text(data.result.borough);
+
+                    $('#edit_errorMessage').fadeOut();
+                    $('#edit_successMessage').fadeOut(100, function() {
+                        $('#edit_successMessage').fadeIn();
+                    });
+                    button.button('reset');
+                }
+            }).fail(function () {
+                $('#edit_successMessage').fadeOut();
+                $('#edit_errorMessage').fadeOut(100, function() {
+                    $('#edit_errorMessage').text('Network Error').fadeIn();
+                });
+                button.button('reset');
+            });
+        });
+
+        $('.showDeleteModelBtn').click(function () {
+            var button = $(this);
+            var restaurant_id = button.closest("tr").data('restaurant_id');
+            button.button('loading');
+            $.get("rest/restaurant/" + restaurant_id,
+                    {},
+                    function (data, status) {
+                        button.button('reset');
+
+                        if (status = !'success') {
+                            alert('AJAX HTTP STATUS FAIL');
+                            return;
+                        }
+                        if (data.errorMessage != null) {
+                            alert(data.errorMessage);
+                            return;
+                        }
+
+
+                        //  console.log(data);
+                        var modal = $(this);
+                        $('.modal-body #delete_borough').val(data.result.borough);
+                        $('.modal-body #delete_cuisine').val(data.result.cuisine);
+                        $('.modal-body #delete_name').val(data.result.name);
+                        $('.modal-body #old_delete_restaurant_id').val(data.result.restaurant_id);
+                        $('.modal-body #delete_restaurant_id').val(data.result.restaurant_id);
+                        $('.modal-body #delete_building').val(data.result.address.building);
+                        $('.modal-body #delete_zipcode').val(data.result.address.zipcode);
+                        $('.modal-body #delete_street').val(data.result.address.street);
+                        $('.modal-body #delete_coord_x').val(data.result.address.coord[0]);
+                        $('.modal-body #delete_coord_y').val(data.result.address.coord[1]);
+
+
+                        $('#delete_successMessage').hide();
+                        $('#delete_errorMessage').text('').hide();
+                        $('#deleteModal').modal("show")
+
+                        $('#deleteModalSubmut').show();
+
+                    }).fail(function () {
+                alert('AJAX HTTP STATUS FAIL');
+                button.button('reset');
+            });
+
+        })
+        $('#deleteModalSubmut').click(function () {
+            var button = $(this);
+            button.button('loading');
+
+            $.ajax({
+                type: 'DELETE',
+                dataType: 'json',
+                contentType: "application/json",
+                url: "rest/restaurant/"+$('.modal-body #old_delete_restaurant_id').val(),
+                success: function(data,status){
+                    if (status = !'success') {
+                        $('#delete_successMessage').fadeOut();
+                        $('#delete_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
+                        return;
+                    }
+                    if (data.errorMessages != null) {
+                        $('#delete_successMessage').fadeOut();
+                        $('#delete_errorMessage').text(data.errorMessages).fadeIn();
+                        return;
+                    }
+
+                    $('#delete_errorMessage').fadeOut();
+                    $('#delete_successMessage').fadeIn();
+                    $('#r'+$('.modal-body #old_delete_restaurant_id').val()).remove();
+                    button.button('reset');
+                    button.hide();
+                }
+            }).fail(function () {
+                $('#delete_successMessage').fadeOut();
+                $('#delete_errorMessage').fadeOut(100, function() {
+                    $('#delete_errorMessage').text('Network Error').fadeIn();
+                });
+                button.button('reset');
+            });
+        });
+
+    });
+</script>
