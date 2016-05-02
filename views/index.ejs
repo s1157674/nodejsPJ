@@ -2074,12 +2074,12 @@
                 data: $('#input_Json').text(),
                 success: function (data, status) {
                     button.button('reset');
-                    if (status = !'success') {
-                        alert('AJAX HTTP STATUS FAIL');
+                    if (data.errorMessages != null) {
+                        alert(data.errorMessages);
                         return;
                     }
-                    if (data.errorMessage != null) {
-                        alert(data.errorMessage);
+                    if (status = !'success') {
+                        alert('AJAX HTTP STATUS FAIL');
                         return;
                     }
                     if (data.result == null) {
@@ -2108,12 +2108,12 @@
                 url: "rest/restaurants",
                 success: function (data, status) {
                     button.button('reset');
-                    if (status = !'success') {
-                        alert('AJAX HTTP STATUS FAIL');
+                    if (data.errorMessages != null) {
+                        alert(data.errorMessages);
                         return;
                     }
-                    if (data.errorMessage != null) {
-                        alert(data.errorMessage);
+                    if (status = !'success') {
+                        alert('AJAX HTTP STATUS FAIL');
                         return;
                     }
                     if (data.result == null) {
