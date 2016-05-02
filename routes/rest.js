@@ -247,35 +247,6 @@ var create = function (body, next) {
 
     });
 };
-var importAll = function (body, next) {
-    mongoose.connect(MONGODBURL, function (err) {
-        if (err != null) {
-            db.close();
-            next({}, "mongoose.connect fail");
-            return;
-        }
-        var restaurant = mongoose.model('Restaurant');
-        var new_restaurants = [];
-
-        body.forEach(function (item) {
-            var new_restaurant = new restaurant(item);
-            new_restaurant.push(new_restaurants);
-        });
-
-        restaurant.create(new_restaurants, function (err, results) {
-            if (err != null) {
-                console.log(err);
-                db.close();
-                next({}, "restaurant.create fail");
-                return;
-            }
-            db.close();
-            next(results);
-        });
-
-    });
-};
-
 
 
 var show = function (_id, next) {
@@ -615,39 +586,12 @@ router.get('/', function (req, res) {
 });
 
 //GET	    /rest/restaurant	            index       get all
-//POST	    /rest/restaurants	            import      add many*
 //DELETE	/rest/restaurants	            clear       destroy all*
 
 //POST	    /rest/restaurant/create	        create      add one
 //GET	    /rest/restaurant/{_id}	        show        show one
 //PUT	    /rest/restaurant/{_id}	        update      update one
 //DELETE	/rest/restaurant/{_id}	        destroy     destroy one
-
-router.delete('/rest/restaurants', jsonParser, function (req, res) {
-    destroyAll( function (results, errorMessage,err) {
-        var j = {};
-
-        if (errorMessage != null) {
-            j.errorMessages = errorMessage;
-        }
-        console.log(err);
-        if (err != null) {
-            for (var key in err.errors) {
-                var error = err.errors[key];
-                delete error.message;
-                delete error.name;
-                delete error.properties;
-                delete error.message;
-                delete error.value;
-                if (key == 'address.coord' && error.kind == 'Array')error.kind = 'Number';
-            }
-            j.errors = err.errors;
-        }
-        j.result = results;
-        res.json(j);
-        res.end('Connection closed', 200);
-    });
-});
 
 router.get('/rest/restaurant', urlencodedParser, function (req, res) {
     index(req.query, function (results, errorMessage,err) {
@@ -693,6 +637,31 @@ router.get('/rest/restaurant', urlencodedParser, function (req, res) {
         //     }
         // }
 
+        var j = {};
+
+        if (errorMessage != null) {
+            j.errorMessages = errorMessage;
+        }
+        console.log(err);
+        if (err != null) {
+            for (var key in err.errors) {
+                var error = err.errors[key];
+                delete error.message;
+                delete error.name;
+                delete error.properties;
+                delete error.message;
+                delete error.value;
+                if (key == 'address.coord' && error.kind == 'Array')error.kind = 'Number';
+            }
+            j.errors = err.errors;
+        }
+        j.result = results;
+        res.json(j);
+        res.end('Connection closed', 200);
+    });
+});
+router.delete('/rest/restaurants', function (req, res) {
+    destroyAll( function (results, errorMessage,err) {
         var j = {};
 
         if (errorMessage != null) {
