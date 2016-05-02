@@ -11,6 +11,15 @@
 <button type="button" class="btn btn-success btn-lg" id="showCreateModelBtn" data-toggle="modal"
         data-target="#createModal">Create Restaurant
 </button>
+<button type="button" class="btn btn-success btn-lg" id="importModelBtn" data-toggle="modal"
+        data-target="#importRestaurantModal">Import Restaurants (JSON Array)
+</button>
+<button type="button" class="btn btn-danger btn-lg" id="deleteAllModalBtn" data-toggle="modal"
+        data-target="#deleteAllModal">Delete All Restaurants
+</button>
+
+<button type="button" class="btn btn-info btn-lg" id="reloadBtn" >Reload
+</button>
 
 <div class="panel panel-info">
     <div class="panel-heading">
@@ -385,14 +394,55 @@
                     <input type="text" class="form-control" id="input_score" placeholder="" disabled>
                 </form>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger">Delete</button>
+                    <div class="alert alert-success" id="deleteGrade_successMessage" role="alert" style="text-align:left">
+                        Delete
+                        Success
+                    </div>
+                    <div class="alert alert-danger" id="deleteGrade_errorMessage" role="alert"
+                         style="text-align:left"></div>
+                    <button type="button" class="btn btn-danger" id="deleteGradeModalSubmut">Delete</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="importRestaurantModal" tabindex="-1" role="dialog" aria-labelledby="importRestaurantModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Import Resaurant(JSON Array)</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label for="input_json">Paste Here</label>
+                    <textarea class="form-control" rows="20" id="input_Json"></textarea>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="importRestaurantModalBtn">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="deleteAllModal" tabindex="-1" role="dialog" aria-labelledby="deleteAllModalLabel">
+    <div class="modal-dialog" role="document">
+        <!--<div class="modal-content">-->
+        <div class="alert alert-danger" role="alert">
+            <div>
+                <h1><strong>Warning!</strong> Are you sure to delete ALL record ?</h1>
+            </div>
+            <div>
+                <button type="button" class="btn btn-danger" id="deleteAllModalSubmitBtn">Delete</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+            </div>
+        </div>
+        <!--</div>-->
+    </div>
+</div>
 
 <table class="table table-hover restaurantTable">
     <thead>
@@ -1068,6 +1118,228 @@
 
         })
 
+        $('#reloadBtn').click(function () {
+            var button = $(this);
+            button.button('loading');
+
+            $.get('rest/restaurant',
+                    {},
+                    function (data, status) {
+                        button.button('reset');
+
+                        if (status = !'success') {
+                            alert('AJAX HTTP STATUS FAIL');
+                            return;
+                        }
+                        if (data.errorMessage != null) {
+                            alert(data.errorMessage);
+                            return;
+                        }
+                        if (data.result == null) {
+                            alert("Not Found");
+                            return;
+                        }
+                        console.log(data);
+
+                        var outputhtml = '';
+
+                        for (var i = 0; i < data.result.length; i++) {
+                            if (data.result[i].avgScore == null) {
+                                data.result[i].avgScore = 'N/A';
+                            } else {
+                                data.result[i].avgScore = parseFloat(data.result[i].avgScore).toFixed(2);
+                            }
+                            outputhtml += '<tr id="' + data.result[i]._id + '" data-_id="' + data.result[i]._id + '">';
+                            outputhtml += '<th scope="row">' + data.result[i].name + '</th>';
+                            outputhtml += '<td>' + data.result[i].cuisine + '</td>';
+                            outputhtml += '<td>' + data.result[i].borough + '</td>';
+                            outputhtml += '<td>' + data.result[i].avgScore + '</td>';
+                            outputhtml += '<td><button type="button" class="btn btn-info showReadModelBtn">Read Deatils</button></td>';
+                            outputhtml += '<td><button type="button" class="btn btn-warning showEditModelBtn">Update</button></td>';
+                            outputhtml += '<td><button type="button" class="btn btn-danger showDeleteModelBtn">Delete</button></td>';
+                            outputhtml += '</tr>';
+                        }
+
+
+                        $('.restaurantTable tbody').html(outputhtml);
+                        $('.showReadModelBtn').click(function () {
+                            var button = $(this);
+                            var _id = button.closest("tr").data('_id');
+                            button.button('loading');
+                            $.get("rest/restaurant/" + _id,
+                                    {},
+                                    function (data, status) {
+                                        button.button('reset');
+
+                                        if (status = !'success') {
+                                            alert('AJAX HTTP STATUS FAIL');
+                                            return;
+                                        }
+                                        if (data.errorMessage != null) {
+                                            alert(data.errorMessage);
+                                            return;
+                                        }
+
+                                        if (data.result == null) {
+                                            alert("Not Found");
+                                            return;
+                                        }
+
+                                        //  console.log(data);
+                                        var modal = $(this);
+                                        $('.modal-body #read_borough').val(data.result.borough);
+                                        $('.modal-body #read_cuisine').val(data.result.cuisine);
+                                        $('.modal-body #read_name').val(data.result.name);
+                                        $('.modal-body #read_id').val(data.result._id);
+                                        $('.modal-body #read_restaurant_id').val(data.result.restaurant_id);
+                                        $('.modal-body #read_building').val(data.result.address.building);
+                                        $('.modal-body #read_zipcode').val(data.result.address.zipcode);
+                                        $('.modal-body #read_street').val(data.result.address.street);
+                                        $('.modal-body #read_coord_x').val(data.result.address.coord[0]);
+                                        $('.modal-body #read_coord_y').val(data.result.address.coord[1]);
+
+
+                                        var gradeTbody = '';
+                                        data.result.grades.forEach(function (grade) {
+                                            var date = grade.date;
+                                            var datestr = date.replace('T', ' ').slice(0, 16);
+                                            gradeTbody += '<tr>';
+                                            gradeTbody += '<td class="datetd" value="' + grade.date + '">' + datestr + '</td>';
+                                            gradeTbody += '<td class="gradetd" value="' + grade.grade + '">' + grade.grade + '</td>';
+                                            gradeTbody += '<td class="scoretd" value="' + grade.score + '">' + grade.score + '</td>';
+                                            gradeTbody += '<td><button type="button" class="btn btn-warning editGradeModalBtn" >Update</button></td>';
+                                            gradeTbody += '<td><button type="button" class="btn btn-danger deleteGradeModalBtn" >Delete</button></td>';
+                                            gradeTbody += '</tr>';
+                                        })
+                                        $('#readModal tbody').html(gradeTbody);
+
+                                        $('.editGradeModalBtn').click(function () {
+                                            var button = $(this);
+                                            var tr = button.closest("tr");
+
+
+                                            $('#editGradeModal')
+
+                                            $('#editGradeModal').modal("show")
+
+
+                                        })
+
+                                        $('#readModal').modal("show")
+
+                                    }).fail(function () {
+                                alert('AJAX HTTP STATUS FAIL');
+                                button.button('reset');
+                            });
+
+                        });
+                        $('.showEditModelBtn').click(function () {
+                            var button = $(this);
+                            var _id = button.closest("tr").data('_id');
+                            button.button('loading');
+                            $.get("rest/restaurant/" + _id,
+                                    {},
+                                    function (data, status) {
+                                        button.button('reset');
+
+                                        if (status = !'success') {
+                                            alert('AJAX HTTP STATUS FAIL');
+                                            return;
+                                        }
+                                        if (data.errorMessage != null) {
+                                            alert(data.errorMessage);
+                                            return;
+                                        }
+                                        if (data.result == null) {
+                                            alert("Not Found");
+                                            return;
+                                        }
+
+                                        //  console.log(data);
+                                        var modal = $(this);
+                                        $('.modal-body #edit_borough').val(data.result.borough);
+                                        $('.modal-body #edit_cuisine').val(data.result.cuisine);
+                                        $('.modal-body #edit_name').val(data.result.name);
+                                        $('.modal-body #edit_id').val(data.result._id);
+                                        $('.modal-body #edit_restaurant_id').val(data.result.restaurant_id);
+                                        $('.modal-body #edit_building').val(data.result.address.building);
+                                        $('.modal-body #edit_zipcode').val(data.result.address.zipcode);
+                                        $('.modal-body #edit_street').val(data.result.address.street);
+                                        $('.modal-body #edit_coord_x').val(data.result.address.coord[0]);
+                                        $('.modal-body #edit_coord_y').val(data.result.address.coord[1]);
+
+
+                                        $('#edit_successMessage').hide();
+                                        $('#edit_errorMessage').text('').hide();
+                                        $('#editModal').modal("show")
+
+                                    }).fail(function () {
+                                alert('AJAX HTTP STATUS FAIL');
+                                button.button('reset');
+                            });
+
+                        })
+                        $('.showDeleteModelBtn').click(function () {
+                            var button = $(this);
+                            var _id = button.closest("tr").data('_id');
+                            button.button('loading');
+                            $.get("rest/restaurant/" + _id,
+                                    {},
+                                    function (data, status) {
+                                        button.button('reset');
+
+                                        if (status = !'success') {
+                                            alert('AJAX HTTP STATUS FAIL');
+                                            return;
+                                        }
+                                        if (data.errorMessage != null) {
+                                            alert(data.errorMessage);
+                                            return;
+                                        }
+
+                                        if (data.result == null) {
+                                            alert("Not Found");
+                                            return;
+                                        }
+
+                                        //  console.log(data);
+                                        var modal = $(this);
+                                        $('.modal-body #delete_borough').val(data.result.borough);
+                                        $('.modal-body #delete_cuisine').val(data.result.cuisine);
+                                        $('.modal-body #delete_name').val(data.result.name);
+                                        $('.modal-body #delete_id').val(data.result._id);
+                                        $('.modal-body #delete_restaurant_id').val(data.result.restaurant_id);
+                                        $('.modal-body #delete_building').val(data.result.address.building);
+                                        $('.modal-body #delete_zipcode').val(data.result.address.zipcode);
+                                        $('.modal-body #delete_street').val(data.result.address.street);
+                                        $('.modal-body #delete_coord_x').val(data.result.address.coord[0]);
+                                        $('.modal-body #delete_coord_y').val(data.result.address.coord[1]);
+
+
+                                        $('#delete_successMessage').hide();
+                                        $('#delete_errorMessage').text('').hide();
+                                        $('#deleteModal').modal("show")
+
+                                        $('#deleteModalSubmut').show();
+
+                                    }).fail(function () {
+                                alert('AJAX HTTP STATUS FAIL');
+                                button.button('reset');
+                            });
+
+                        })
+                    }
+            ).fail(function () {
+                alert('AJAX HTTP STATUS FAIL');
+                button.button('reset');
+            });
+
+
+        })
+
+
+
+
         $('.showReadModelBtn').click(function () {
             var button = $(this);
             var _id = button.closest("tr").data('_id');
@@ -1136,6 +1408,15 @@
                         $('.deleteGradeModalBtn').click(function () {
                             var button = $(this);
                             var tr = button.closest("tr");
+
+                            $('#deleteGradeModal #_id').val(tr.data('_id'));
+                            $('#deleteGradeModal #input_date').val(tr.find("td").eq(0).data('datetd'));
+                            $('#deleteGradeModal #input_grade').val(tr.find("td").eq(1).data('gradetd'));
+                            $('#deleteGradeModal #input_score').val(tr.find("td").eq(2).data('scoretd'));
+
+                            $('#deleteGradeModalSubmut').show();
+                            $('#deleteGrade_successMessage').hide();
+                            $('#deleteGrade_errorMessage').text('').hide();
                             $('#deleteGradeModal').modal("show");
                         })
 
@@ -1228,6 +1509,15 @@
                     $('.deleteGradeModalBtn').click(function () {
                         var button = $(this);
                         var tr = button.closest("tr");
+
+                        $('#deleteGradeModal #_id').val(tr.data('_id'));
+                        $('#deleteGradeModal #input_date').val(tr.find("td").eq(0).data('datetd'));
+                        $('#deleteGradeModal #input_grade').val(tr.find("td").eq(1).data('gradetd'));
+                        $('#deleteGradeModal #input_score').val(tr.find("td").eq(2).data('scoretd'));
+
+                        $('#deleteGradeModalSubmut').show();
+                        $('#deleteGrade_successMessage').hide();
+                        $('#deleteGrade_errorMessage').text('').hide();
                         $('#deleteGradeModal').modal("show");
                     })
 
@@ -1316,6 +1606,115 @@
                 button.button('reset');
             });
         });
+        $('#deleteGradeModalSubmut').click(function () {
+            var button = $(this);
+            button.button('loading');
+
+            var j = {};
+            j._id = $('#deleteGradeModal .modal-body #_id').val();
+            j.date = $('#deleteGradeModal .modal-body #input_date').val();
+            j.grade = $('#deleteGradeModal .modal-body #input_grade').val();
+            j.score = $('#deleteGradeModal .modal-body #input_score').val();
+
+
+            $.ajax({
+                type: 'DELETE',
+                dataType: 'json',
+                contentType: "application/json",
+                url: "rest/restaurant/" + $('.modal-body #read_id').val() + "/grade/"+ j._id,
+                data: JSON.stringify(j),
+                success: function (data, status) {
+                    if (status = !'success') {
+                        $('#deleteGrade_successMessage').fadeOut();
+                        $('#deleteGrade_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
+                        button.button('reset');
+                        return;
+                    }
+                    if (data.errorMessages != null) {
+                        if (data.errors != null) {
+                            data.errorMessages += '</br></br>'
+                            for (var key in data.errors) {
+                                var error = data.errors[key];
+                                data.errorMessages += error.path + ' : ' + error.kind + '</br>';
+                            }
+                        }
+
+                        $('#deleteGrade_successMessage').fadeOut();
+                        $('#deleteGrade_errorMessage').html(data.errorMessages).fadeIn();
+                        button.button('reset');
+                        return;
+                    }
+
+
+
+
+
+//                    var datestr = j.date.replace('T', ' ').slice(0, 16);
+//                    if(!j.date){
+//                        datestr=new Date().toISOString();
+//                    }
+//
+//
+//
+//                    tr.find("td").eq(0).text(datestr.replace('T', ' ').slice(0, 16)).data('datetd',datestr);
+//                    tr.find("td").eq(1).text(j.grade).data('gradetd',j.grade);
+//                    tr.find("td").eq(2).text(j.score).data('scoretd',j.score);
+
+
+                    $('#deleteGrade_errorMessage').fadeOut();
+                    $('#deleteGrade_successMessage').fadeIn();
+                    var tr = $('#g' +  j._id).remove();
+                    button.button('reset');
+                    button.hide();
+                }
+            }).fail(function () {
+                $('#deleteGrade_successMessage').fadeOut();
+                $('#deleteGrade_errorMessage').fadeOut(100, function () {
+                    $('#deleteGrade_errorMessage').text('Network Error').fadeIn();
+                });
+                button.button('reset');
+            });
+        });
+
+
+
+
+        $('#deleteAllModalSubmitBtn').click(function () {
+            var button = $(this);
+            button.button('loading');
+
+            $.ajax({
+                type: 'DELETE',
+                dataType: 'json',
+                contentType: "application/json",
+                url: "rest/restaurants",
+                success: function (data, status) {
+                    button.button('reset');
+                    if (status = !'success') {
+                        alert('AJAX HTTP STATUS FAIL');
+                        return;
+                    }
+                    if (data.errorMessage != null) {
+                        alert(data.errorMessage);
+                        return;
+                    }
+                    if (data.result == null) {
+                        alert("Not Found");
+                        return;
+                    }
+                    console.log(data);
+                    $('#deleteAllModal').modal('hide');
+                    $('#reloadBtn').click();
+                }
+            }).fail(function () {
+                alert('AJAX HTTP STATUS FAIL');
+                button.button('reset');
+            });
+
+        })
+
+
+
 
         $(document).on('hidden.bs.modal', '.modal', function () {
             $('.modal:visible').length && $(document.body).addClass('modal-open');
