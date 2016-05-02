@@ -270,14 +270,15 @@ var index = function (query, next) {
                 }
             }
         ];
+        if (sortor) {
+            options.push({$sort: sortor});
+        }
         if (limit) {
             options.push({$limit: limit});
         } else {
             // options.push({$limit: 5}); //default limit
         }
-        if (sortor) {
-            options.push({$sort: sortor});
-        }
+
 
         restaurant.aggregate(
             options, function (err, results) {
