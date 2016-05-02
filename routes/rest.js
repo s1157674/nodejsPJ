@@ -473,6 +473,7 @@ var replaceGrades = function (_id, body, next) {
 
         body.forEach(function (item) {
             var new_grade = new grade(item);
+            if(new_grade._id==null)new_grade._id=mongoose.Types.ObjectId();
             new_grades.push(new_grade);
         });
 
