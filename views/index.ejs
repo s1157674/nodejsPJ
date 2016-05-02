@@ -11,9 +11,9 @@
 <button type="button" class="btn btn-success btn-lg" id="showCreateModelBtn" data-toggle="modal"
         data-target="#createModal">Create Restaurant
 </button>
-<!--<button type="button" class="btn btn-success btn-lg" id="importModelBtn" data-toggle="modal"-->
-        <!--data-target="#importRestaurantModal">Import Restaurants (JSON Array)-->
-<!--</button>-->
+<button type="button" class="btn btn-success btn-lg" id="importModelBtn" data-toggle="modal"
+        data-target="#importRestaurantModal">Import Restaurants
+</button>
 <button type="button" class="btn btn-danger btn-lg" id="deleteAllModalBtn" data-toggle="modal"
         data-target="#deleteAllModal">Delete All Restaurants
 </button>
@@ -412,12 +412,397 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Import Resaurant(JSON Array)</h4>
+                <h4 class="modal-title" id="myModalLabel">Import Resaurants</h4>
             </div>
             <div class="modal-body">
                 <form>
                     <label for="input_json">Paste Here</label>
-                    <textarea class="form-control" rows="20" id="input_Json"></textarea>
+                    <textarea class="form-control" rows="20" id="input_Json">{
+  "restaurants": [
+    {
+      "_id": "57272a0932c5746ceb2b31ca",
+      "address": {
+        "coord": [
+          0,
+          0
+        ],
+        "zipcode": "testZipcode",
+        "street": "testStreet",
+        "building": "testBuilding"
+      },
+      "borough": "testCuisine",
+      "cuisine": "testCuisine",
+      "grades": [],
+      "name": "testName",
+      "restaurant_id": "testRestaurant ",
+      "avgScore": null
+    },
+    {
+      "_id": "572716145eb07bc0534e3857",
+      "address": {
+        "zipcode": "11247",
+        "street": "Street ABCC",
+        "building": "Block B",
+        "coord": [
+          -45.064198,
+          491.5148
+        ]
+      },
+      "borough": "Bronx",
+      "cuisine": "Bakery",
+      "grades": [
+        {
+          "_id": "572716555eb07bc0534e385c",
+          "grade": "D",
+          "score": 0,
+          "date": "2016-05-02T09:11:28.771Z"
+        },
+        {
+          "_id": "572716505eb07bc0534e385b",
+          "grade": "B",
+          "score": 5,
+          "date": "2016-05-02T08:56:48.506Z"
+        },
+        {
+          "_id": "572716615eb07bc0534e385e",
+          "grade": "D",
+          "score": 0,
+          "date": "2016-05-02T08:57:05.031Z"
+        },
+        {
+          "_id": "572716475eb07bc0534e385a",
+          "grade": "C",
+          "score": 10,
+          "date": "2016-05-02T08:56:39.091Z"
+        },
+        {
+          "_id": "5727163b5eb07bc0534e3859",
+          "grade": "B",
+          "score": 25,
+          "date": "2016-05-02T08:56:27.758Z"
+        },
+        {
+          "_id": "5727162c5eb07bc0534e3858",
+          "grade": "A",
+          "score": 17,
+          "date": "2016-05-02T08:56:12.106Z"
+        }
+      ],
+      "name": "A1 Bakery",
+      "restaurant_id": "A11111111",
+      "avgScore": 9.5
+    },
+    {
+      "_id": "572717f15eb07bc0534e3863",
+      "address": {
+        "zipcode": "84456",
+        "street": "Street 689",
+        "building": "Tomcat building",
+        "coord": [
+          2.844,
+          89.665
+        ]
+      },
+      "borough": "Japan",
+      "cuisine": "Japanese food",
+      "grades": [
+        {
+          "_id": "5727197a5eb07bc0534e3872",
+          "grade": "C",
+          "score": 7,
+          "date": "2016-05-02T09:10:18.985Z"
+        },
+        {
+          "_id": "572719745eb07bc0534e3871",
+          "grade": "B",
+          "score": 5,
+          "date": "2016-05-02T09:10:12.953Z"
+        },
+        {
+          "_id": "572719705eb07bc0534e3870",
+          "grade": "A",
+          "score": 8,
+          "date": "2016-05-02T09:10:08.681Z"
+        }
+      ],
+      "name": "Yoshinoya",
+      "restaurant_id": "97849",
+      "avgScore": 6.666666666666667
+    },
+    {
+      "_id": "572718e55eb07bc0534e3865",
+      "address": {
+        "zipcode": "89461",
+        "street": "XX road",
+        "building": "YY Town",
+        "coord": [
+          81,
+          99
+        ]
+      },
+      "borough": "USA",
+      "cuisine": "Ice Cream",
+      "grades": [
+        {
+          "_id": "572719505eb07bc0534e386d",
+          "grade": "B",
+          "score": 20,
+          "date": "2016-05-02T09:09:36.308Z"
+        }
+      ],
+      "name": "USA IC shop",
+      "restaurant_id": "USA984163",
+      "avgScore": 20
+    },
+    {
+      "_id": "57271a025eb07bc0534e3879",
+      "address": {
+        "zipcode": "89413",
+        "street": "888 road",
+        "building": "6745",
+        "coord": [
+          78.1651,
+          23.41894
+        ]
+      },
+      "borough": "Manhattan",
+      "cuisine": "Irish",
+      "grades": [
+        {
+          "_id": "572729a74f86251cafee16dd",
+          "grade": "A",
+          "score": 20,
+          "date": "2016-05-02T10:19:19.958Z"
+        },
+        {
+          "_id": "57271a4f5eb07bc0534e387c",
+          "grade": "C",
+          "score": 0,
+          "date": "2016-05-02T09:13:51.029Z"
+        }
+      ],
+      "name": "Irish Restaurant",
+      "restaurant_id": "49891",
+      "avgScore": 10
+    },
+    {
+      "_id": "572716875eb07bc0534e3860",
+      "address": {
+        "zipcode": "41781",
+        "street": "Ho Man Tin",
+        "building": "OUHK",
+        "coord": [
+          41.48,
+          78.11
+        ]
+      },
+      "borough": "Hong Kong",
+      "cuisine": "Fusion",
+      "grades": [
+        {
+          "_id": "572719675eb07bc0534e386f",
+          "grade": "A",
+          "score": 17,
+          "date": "2016-05-02T09:09:59.804Z"
+        },
+        {
+          "_id": "572719455eb07bc0534e386c",
+          "grade": "C",
+          "score": 5,
+          "date": "2016-05-02T09:09:25.652Z"
+        }
+      ],
+      "name": "OUHK Canteen",
+      "restaurant_id": "584138",
+      "avgScore": 11
+    },
+    {
+      "_id": "572716f15eb07bc0534e3861",
+      "address": {
+        "zipcode": "85748",
+        "street": "HK",
+        "building": "shopping mails",
+        "coord": [
+          874.651,
+          15.849
+        ]
+      },
+      "borough": "Hong Kong",
+      "cuisine": "fast food",
+      "grades": [
+        {
+          "_id": "57271b110a44ef70249f5278",
+          "grade": "C",
+          "score": 20,
+          "date": "2016-05-02T09:17:05.395Z"
+        },
+        {
+          "_id": "5727195a5eb07bc0534e386e",
+          "grade": "A",
+          "score": 50,
+          "date": "2016-05-02T09:09:46.539Z"
+        }
+      ],
+      "name": "M Restaurant",
+      "restaurant_id": "8748941",
+      "avgScore": 35
+    },
+    {
+      "_id": "5727174d5eb07bc0534e3862",
+      "address": {
+        "zipcode": "12348",
+        "street": "street 458",
+        "building": "1874",
+        "coord": [
+          23.67,
+          765.66
+        ]
+      },
+      "borough": "Hong Kong",
+      "cuisine": "fast food",
+      "grades": [
+        {
+          "_id": "572719ca5eb07bc0534e3875",
+          "grade": "A",
+          "score": 20,
+          "date": "2016-05-02T09:11:38.752Z"
+        },
+        {
+          "_id": "5727199c5eb07bc0534e3873",
+          "grade": "C",
+          "score": 2,
+          "date": "2016-05-02T09:10:52.774Z"
+        }
+      ],
+      "name": "KFC",
+      "restaurant_id": "89454",
+      "avgScore": 11
+    },
+    {
+      "_id": "57271a415eb07bc0534e387a",
+      "address": {
+        "zipcode": "48917",
+        "street": "KKX road",
+        "building": "16516 Building",
+        "coord": [
+          23.65496,
+          849.163
+        ]
+      },
+      "borough": "Manhattan",
+      "cuisine": "American",
+      "grades": [
+        {
+          "_id": "572729a74f86251cafee16dd",
+          "grade": "A",
+          "score": 20,
+          "date": "2016-05-02T10:19:19.958Z"
+        },
+        {
+          "_id": "57271a4f5eb07bc0534e387c",
+          "grade": "C",
+          "score": 0,
+          "date": "2016-05-02T09:13:51.029Z"
+        }
+      ],
+      "name": "American Restaurant ",
+      "restaurant_id": "8185181",
+      "avgScore": 10
+    },
+    {
+      "_id": "572718665eb07bc0534e3864",
+      "address": {
+        "zipcode": "96544",
+        "street": "OUHK road",
+        "building": "Block J",
+        "coord": [
+          -65.6441,
+          78.4
+        ]
+      },
+      "borough": "Japan",
+      "cuisine": "Japanese food",
+      "grades": [
+        {
+          "_id": "572719335eb07bc0534e386b",
+          "grade": "F",
+          "score": 5,
+          "date": "2016-05-02T09:09:07.351Z"
+        },
+        {
+          "_id": "5727192c5eb07bc0534e386a",
+          "grade": "B",
+          "score": 20,
+          "date": "2016-05-02T09:09:00.345Z"
+        },
+        {
+          "_id": "572719285eb07bc0534e3869",
+          "grade": "A",
+          "score": 50,
+          "date": "2016-05-02T09:08:56.204Z"
+        },
+        {
+          "_id": "572719235eb07bc0534e3868",
+          "grade": "A",
+          "score": 77,
+          "date": "2016-05-02T09:08:51.627Z"
+        },
+        {
+          "_id": "5727191e5eb07bc0534e3867",
+          "grade": "B",
+          "score": 60,
+          "date": "2016-05-02T09:08:46.948Z"
+        },
+        {
+          "_id": "572719025eb07bc0534e3866",
+          "grade": "A",
+          "score": 80,
+          "date": "2016-05-02T09:08:18.776Z"
+        }
+      ],
+      "name": "Mos Burger",
+      "restaurant_id": "YUVUOTV",
+      "avgScore": 48.666666666666664
+    },
+    {
+      "_id": "572719ac5eb07bc0534e3874",
+      "address": {
+        "zipcode": "89898",
+        "street": "Street 89",
+        "building": "Building 898",
+        "coord": [
+          89.8888,
+          62.44
+        ]
+      },
+      "borough": "USA",
+      "cuisine": "Fusion",
+      "grades": [
+        {
+          "_id": "572719de5eb07bc0534e3878",
+          "grade": "A",
+          "score": 20,
+          "date": "2016-05-02T09:11:58.511Z"
+        },
+        {
+          "_id": "572719d95eb07bc0534e3877",
+          "grade": "B",
+          "score": 5,
+          "date": "2016-05-02T09:11:53.544Z"
+        },
+        {
+          "_id": "572719d65eb07bc0534e3876",
+          "grade": "C",
+          "score": 10,
+          "date": "2016-05-02T09:11:50.110Z"
+        }
+      ],
+      "name": "Mix noodles",
+      "restaurant_id": "MIX898",
+      "avgScore": 11.666666666666666
+    }
+  ]
+}</textarea>
                 </form>
             </div>
             <div class="modal-footer">
@@ -1677,7 +2062,40 @@
         });
 
 
+        $('#importRestaurantModalBtn').click(function () {
+            var button = $(this);
+            button.button('loading');
 
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: "application/json",
+                url: "rest/restaurants",
+                data: $('#input_Json').text(),
+                success: function (data, status) {
+                    button.button('reset');
+                    if (status = !'success') {
+                        alert('AJAX HTTP STATUS FAIL');
+                        return;
+                    }
+                    if (data.errorMessage != null) {
+                        alert(data.errorMessage);
+                        return;
+                    }
+                    if (data.result == null) {
+                        alert("Not Found");
+                        return;
+                    }
+                    console.log(data);
+                    $('#importRestaurantModal').modal('hide');
+                    $('#reloadBtn').click();
+                }
+            }).fail(function () {
+                alert('AJAX HTTP STATUS FAIL');
+                button.button('reset');
+            });
+
+        })
 
         $('#deleteAllModalSubmitBtn').click(function () {
             var button = $(this);

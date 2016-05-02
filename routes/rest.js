@@ -109,6 +109,99 @@ var urlencodedParser = bodyParser.urlencoded({extended: false});
 //         ).sort(sortor).limit(limit);
 //     });
 // };
+
+var recover = function (next) {
+
+    /*  for (var key in query) {
+     var query_item = query[key];
+     }*/
+
+
+    var selector = {};
+    if (query.name) selector.name = {'$regex': query.name};
+    if (query.cuisine) selector.cuisine = {'$regex': query.cuisine};
+    if (query.borough) selector.borough = {'$regex': query.borough};
+    if (query.restaurant_id) selector.restaurant_id = {'$regex': query.restaurant_id};
+
+    if (query.building) {
+        selector['address.building'] = {'$regex': query.building};
+    }
+    if (query.zipcode) {
+        selector['address.zipcode'] = {'$regex': query.zipcode};
+    }
+    if (query.street) {
+        selector['address.street'] = {'$regex': query.street};
+    }
+
+
+    var sortor;
+    var direction;
+    if (query.sort) {
+        direction = (query.direction == null) ? 1 : parseInt(query.direction);
+        sortor = {};
+        sortor[query.sort] = direction;
+    }
+    console.log(direction);
+
+    var limit;
+    if (query.display) {
+        limit = parseInt(query.display, 10);
+    }
+
+    console.log(limit);
+    console.log(sortor);
+    console.log(selector);
+
+    if (!Object.keys(selector).length)selector.name = {'$regex': ''};
+
+
+    mongoose.connect(MONGODBURL, function (err) {
+        if (err != null) {
+            db.close();
+            next({}, "mongoose.connect fail");
+            return;
+        }
+        var restaurant = mongoose.model('Restaurant');
+        var options = [
+            {$match: selector},
+            {$unwind: {path: "$grades", preserveNullAndEmptyArrays: true}},
+            {
+                $group: {
+                    _id: "$_id",
+                    address: {$first: '$address'},
+                    borough: {$first: '$borough'},
+                    cuisine: {$first: '$cuisine'},
+                    grades: {$addToSet: "$grades"},//rewind
+                    name: {$first: '$name'},
+                    restaurant_id: {$first: '$restaurant_id'},
+                    avgScore: {$avg: '$grades.score'},
+                }
+            }
+        ];
+        if (limit) {
+            options.push({$limit: limit});
+        } else {
+            // options.push({$limit: 5}); //default limit
+        }
+        if (sortor) {
+            options.push({$sort: sortor});
+        }
+
+        restaurant.aggregate(
+            options, function (err, results) {
+                if (err != null) {
+                    console.log(err);
+                    db.close();
+                    next({}, "restaurant.find fail");
+                    return;
+                }
+                db.close();
+                next(results);
+            });
+    });
+};
+
+
 var index = function (query, next) {
 
     /*  for (var key in query) {
@@ -251,7 +344,35 @@ var create = function (body, next) {
 
     });
 };
+var importAll = function (body, next) {
+    mongoose.connect(MONGODBURL, function (err) {
+        if (err != null) {
+            db.close();
+            next({}, "mongoose.connect fail");
+            return;
+        }
+        var restaurant = mongoose.model('Restaurant');
+        var new_restaurants = [];
 
+
+        body.restaurants.forEach(function (item) {
+            var new_restaurant = new restaurant(item);
+            new_restaurants.push(new_restaurant);
+        });
+
+        restaurant.create(new_restaurants, function (err, results) {
+            if (err != null) {
+                console.log(err);
+                db.close();
+                next({}, "restaurant.create fail",err);
+                return;
+            }
+            db.close();
+            next(results);
+        });
+
+    });
+};
 
 var show = function (_id, next) {
     mongoose.connect(MONGODBURL, function (err) {
@@ -597,6 +718,73 @@ router.get('/', function (req, res) {
 //GET	    /rest/restaurant/{_id}	        show        show one
 //PUT	    /rest/restaurant/{_id}	        update      update one
 //DELETE	/rest/restaurant/{_id}	        destroy     destroy one
+router.get('/rest/restaurant/recover', function (req, res) {
+    recover( function (results, errorMessage,err) {
+        // //avgScore
+        // var output_results = [];
+        // for (var i = 0; i < results.length; i++) {
+        //     var avgScore = 0;
+        //     results[i].grades.forEach(function (grade) {
+        //         avgScore += grade.score;
+        //     });
+        //     if (results[i].grades.length == 0) {
+        //         avgScore = 'N/A';
+        //     } else {
+        //         avgScore /= results[i].grades.length;
+        //         avgScore = avgScore.toFixed(2)
+        //     }
+        //     var newResult = JSON.parse(JSON.stringify(results[i]));
+        //     newResult.avgScore = avgScore;
+        //     results[i] = newResult;
+        // }
+        //
+        // if (req.query.sort) {
+        //     if (req.query.sort == 'score') {
+        //         var direction = (req.query.direction == null) ? 1 : req.query.direction;
+        //         var undirection;
+        //         if (direction < 0) {
+        //             undirection = 1;
+        //         } else {
+        //             undirection = -1;
+        //         }
+        //
+        //         console.log(123);
+        //         results.sort(function (a, b) {
+        //             if (parseFloat(a.avgScore) > parseFloat(b.avgScore)) {
+        //                 return direction;
+        //             }
+        //             if (parseFloat(a.avgScore) < parseFloat(b.avgScore)) {
+        //                 return undirection;
+        //             }
+        //             return 0;
+        //         });
+        //
+        //     }
+        // }
+
+        var j = {};
+
+        if (errorMessage != null) {
+            j.errorMessages = errorMessage;
+        }
+        console.log(err);
+        if (err != null) {
+            for (var key in err.errors) {
+                var error = err.errors[key];
+                delete error.message;
+                delete error.name;
+                delete error.properties;
+                delete error.message;
+                delete error.value;
+                if (key == 'address.coord' && error.kind == 'Array')error.kind = 'Number';
+            }
+            j.errors = err.errors;
+        }
+        j.result = results;
+        res.json(j);
+        res.end('Connection closed', 200);
+    });
+});
 
 router.get('/rest/restaurant', urlencodedParser, function (req, res) {
     index(req.query, function (results, errorMessage,err) {
@@ -642,6 +830,31 @@ router.get('/rest/restaurant', urlencodedParser, function (req, res) {
         //     }
         // }
 
+        var j = {};
+
+        if (errorMessage != null) {
+            j.errorMessages = errorMessage;
+        }
+        console.log(err);
+        if (err != null) {
+            for (var key in err.errors) {
+                var error = err.errors[key];
+                delete error.message;
+                delete error.name;
+                delete error.properties;
+                delete error.message;
+                delete error.value;
+                if (key == 'address.coord' && error.kind == 'Array')error.kind = 'Number';
+            }
+            j.errors = err.errors;
+        }
+        j.result = results;
+        res.json(j);
+        res.end('Connection closed', 200);
+    });
+});
+router.post('/rest/restaurants', function (req, res) {
+    importAll(req.body, function (results, errorMessage,err) {
         var j = {};
 
         if (errorMessage != null) {
