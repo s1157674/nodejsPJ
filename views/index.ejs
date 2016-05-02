@@ -950,6 +950,94 @@
 
                     $('.restaurantTable tbody > tr:first').before(outputhtml);
 
+                    $('.restaurantTable tbody > tr:first .showReadModelBtn').click(function () {
+                        var button = $(this);
+                        var _id = button.closest("tr").data('_id');
+                        button.button('loading');
+                        $.get("rest/restaurant/" + _id,
+                                {},
+                                function (data, status) {
+                                    button.button('reset');
+
+                                    if (status = !'success') {
+                                        alert('AJAX HTTP STATUS FAIL');
+                                        return;
+                                    }
+                                    if (data.errorMessages != null) {
+                                        alert(data.errorMessages);
+                                        return;
+                                    }
+
+                                    if (data.result == null) {
+                                        alert("Not Found");
+                                        return;
+                                    }
+
+                                    //  console.log(data);
+                                    var modal = $(this);
+                                    $('.modal-body #read_borough').val(data.result.borough);
+                                    $('.modal-body #read_cuisine').val(data.result.cuisine);
+                                    $('.modal-body #read_name').val(data.result.name);
+                                    $('.modal-body #read_id').val(data.result._id);
+                                    $('.modal-body #read_restaurant_id').val(data.result.restaurant_id);
+                                    $('.modal-body #read_building').val(data.result.address.building);
+                                    $('.modal-body #read_zipcode').val(data.result.address.zipcode);
+                                    $('.modal-body #read_street').val(data.result.address.street);
+                                    $('.modal-body #read_coord_x').val(data.result.address.coord[0]);
+                                    $('.modal-body #read_coord_y').val(data.result.address.coord[1]);
+
+
+                                    var gradeTbody = '';
+                                    data.result.grades.forEach(function (grade) {
+                                        var date = grade.date;
+                                        var datestr = date.replace('T', ' ').slice(0, 16);
+                                        gradeTbody += '<tr id="g' + grade._id + '"  data-_id=' + grade._id + '>';
+                                        gradeTbody += '<td data-datetd= "' + grade.date + '">' + datestr + '</td>';
+                                        gradeTbody += '<td data-gradetd="' + grade.grade + '">' + grade.grade + '</td>';
+                                        gradeTbody += '<td data-scoretd="' + grade.score + '">' + grade.score + '</td>';
+                                        gradeTbody += '<td><button type="button" class="btn btn-warning editGradeModalBtn" >Update</button></td>';
+                                        gradeTbody += '<td><button type="button" class="btn btn-danger deleteGradeModalBtn" >Delete</button></td>';
+                                        gradeTbody += '</tr>';
+                                    })
+                                    $('#readModal tbody').html(gradeTbody);
+
+                                    $('.editGradeModalBtn').click(function () {
+                                        var button = $(this);
+                                        var tr = button.closest("tr");
+
+                                        $('#editGradeModal #_id').val(tr.data('_id'));
+                                        $('#editGradeModal #input_date').val(tr.find("td").eq(0).data('datetd'));
+                                        $('#editGradeModal #input_grade').val(tr.find("td").eq(1).data('gradetd'));
+                                        $('#editGradeModal #input_score').val(tr.find("td").eq(2).data('scoretd'));
+
+                                        $('#editGrade_successMessage').hide();
+                                        $('#editGrade_errorMessage').text('').hide();
+                                        $('#editGradeModal').modal("show");
+                                    })
+
+                                    $('.deleteGradeModalBtn').click(function () {
+                                        var button = $(this);
+                                        var tr = button.closest("tr");
+
+                                        $('#deleteGradeModal #_id').val(tr.data('_id'));
+                                        $('#deleteGradeModal #input_date').val(tr.find("td").eq(0).data('datetd'));
+                                        $('#deleteGradeModal #input_grade').val(tr.find("td").eq(1).data('gradetd'));
+                                        $('#deleteGradeModal #input_score').val(tr.find("td").eq(2).data('scoretd'));
+
+                                        $('#deleteGradeModalSubmut').show();
+                                        $('#deleteGrade_successMessage').hide();
+                                        $('#deleteGrade_errorMessage').text('').hide();
+                                        $('#deleteGradeModal').modal("show");
+                                    })
+
+                                    $('#readModal').modal("show")
+
+                                }).fail(function () {
+                            alert('AJAX HTTP STATUS FAIL');
+                            button.button('reset');
+                        });
+
+                    });
                     $('.restaurantTable tbody > tr:first .showEditModelBtn').click(function () {
                         var button = $(this);
                         var _id = button.closest("tr").data('_id');
