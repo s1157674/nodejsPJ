@@ -1,0 +1,377 @@
+/* 1 */
+{
+    "_id" : ObjectId("572716145eb07bc0534e3857"),
+    "restaurant_id" : "A11111111",
+    "name" : "A1 Bakery",
+    "cuisine" : "Bakery",
+    "borough" : "Bronx",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("5727162c5eb07bc0534e3858"),
+            "grade" : "A",
+            "score" : 17,
+            "date" : ISODate("2016-05-02T08:56:12.106Z")
+        }, 
+        {
+            "_id" : ObjectId("5727163b5eb07bc0534e3859"),
+            "grade" : "B",
+            "score" : 25,
+            "date" : ISODate("2016-05-02T08:56:27.758Z")
+        }, 
+        {
+            "_id" : ObjectId("572716475eb07bc0534e385a"),
+            "grade" : "C",
+            "score" : 10,
+            "date" : ISODate("2016-05-02T08:56:39.091Z")
+        }, 
+        {
+            "_id" : ObjectId("572716505eb07bc0534e385b"),
+            "grade" : "B",
+            "score" : 5,
+            "date" : ISODate("2016-05-02T08:56:48.506Z")
+        }, 
+        {
+            "_id" : ObjectId("572716555eb07bc0534e385c"),
+            "grade" : "D",
+            "score" : 0,
+            "date" : ISODate("2016-05-02T09:11:28.771Z")
+        }, 
+        {
+            "_id" : ObjectId("572716615eb07bc0534e385e"),
+            "grade" : "D",
+            "score" : 0,
+            "date" : ISODate("2016-05-02T08:57:05.031Z")
+        }, 
+        {
+            "_id" : ObjectId("572716665eb07bc0534e385f"),
+            "grade" : "A",
+            "score" : 80,
+            "date" : ISODate("2016-05-02T08:57:10.393Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "11247",
+        "street" : "Street ABCC",
+        "building" : "Block B",
+        "coord" : [ 
+            -45.064198, 
+            491.5148
+        ]
+    },
+    "__v" : 0
+}
+
+/* 2 */
+{
+    "_id" : ObjectId("572716875eb07bc0534e3860"),
+    "restaurant_id" : "584138",
+    "name" : "OUHK Canteen",
+    "cuisine" : "Fusion",
+    "borough" : "Hong Kong",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("572719455eb07bc0534e386c"),
+            "grade" : "C",
+            "score" : 5,
+            "date" : ISODate("2016-05-02T09:09:25.652Z")
+        }, 
+        {
+            "_id" : ObjectId("572719675eb07bc0534e386f"),
+            "grade" : "A",
+            "score" : 17,
+            "date" : ISODate("2016-05-02T09:09:59.804Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "41781",
+        "street" : "Ho Man Tin",
+        "building" : "OUHK",
+        "coord" : [ 
+            41.48, 
+            78.11
+        ]
+    },
+    "__v" : 0
+}
+
+/* 3 */
+{
+    "_id" : ObjectId("572716f15eb07bc0534e3861"),
+    "restaurant_id" : "8748941",
+    "name" : "M Restaurant",
+    "cuisine" : "fast food",
+    "borough" : "Hong Kong",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("5727195a5eb07bc0534e386e"),
+            "grade" : "A",
+            "score" : 50,
+            "date" : ISODate("2016-05-02T09:09:46.539Z")
+        }, 
+        {
+            "_id" : ObjectId("57271b110a44ef70249f5278"),
+            "grade" : "C",
+            "score" : 20,
+            "date" : ISODate("2016-05-02T09:17:05.395Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "85748",
+        "street" : "HK",
+        "building" : "shopping mails",
+        "coord" : [ 
+            874.651, 
+            15.849
+        ]
+    },
+    "__v" : 0
+}
+
+/* 4 */
+{
+    "_id" : ObjectId("5727174d5eb07bc0534e3862"),
+    "restaurant_id" : "89454",
+    "name" : "KFC",
+    "cuisine" : "fast food",
+    "borough" : "Hong Kong",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("5727199c5eb07bc0534e3873"),
+            "grade" : "C",
+            "score" : 2,
+            "date" : ISODate("2016-05-02T09:10:52.774Z")
+        }, 
+        {
+            "_id" : ObjectId("572719ca5eb07bc0534e3875"),
+            "grade" : "A",
+            "score" : 20,
+            "date" : ISODate("2016-05-02T09:11:38.752Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "12348",
+        "street" : "street 458",
+        "building" : "1874",
+        "coord" : [ 
+            23.67, 
+            765.66
+        ]
+    },
+    "__v" : 0
+}
+
+/* 5 */
+{
+    "_id" : ObjectId("572717f15eb07bc0534e3863"),
+    "restaurant_id" : "97849",
+    "name" : "Yoshinoya",
+    "cuisine" : "Japanese food",
+    "borough" : "Japan",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("572719705eb07bc0534e3870"),
+            "grade" : "A",
+            "score" : 2,
+            "date" : ISODate("2016-05-02T09:10:08.681Z")
+        }, 
+        {
+            "_id" : ObjectId("572719745eb07bc0534e3871"),
+            "grade" : "B",
+            "score" : 5,
+            "date" : ISODate("2016-05-02T09:10:12.953Z")
+        }, 
+        {
+            "_id" : ObjectId("5727197a5eb07bc0534e3872"),
+            "grade" : "C",
+            "score" : 7,
+            "date" : ISODate("2016-05-02T09:10:18.985Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "84456",
+        "street" : "Street 689",
+        "building" : "Tomcat building",
+        "coord" : [ 
+            2.844, 
+            89.665
+        ]
+    },
+    "__v" : 0
+}
+
+/* 6 */
+{
+    "_id" : ObjectId("572718665eb07bc0534e3864"),
+    "restaurant_id" : "YUVUOTV",
+    "name" : "Mos Burger",
+    "cuisine" : "Japanese food",
+    "borough" : "Japan",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("572719025eb07bc0534e3866"),
+            "grade" : "A",
+            "score" : 80,
+            "date" : ISODate("2016-05-02T09:08:18.776Z")
+        }, 
+        {
+            "_id" : ObjectId("5727191e5eb07bc0534e3867"),
+            "grade" : "B",
+            "score" : 60,
+            "date" : ISODate("2016-05-02T09:08:46.948Z")
+        }, 
+        {
+            "_id" : ObjectId("572719235eb07bc0534e3868"),
+            "grade" : "A",
+            "score" : 77,
+            "date" : ISODate("2016-05-02T09:08:51.627Z")
+        }, 
+        {
+            "_id" : ObjectId("572719285eb07bc0534e3869"),
+            "grade" : "A",
+            "score" : 50,
+            "date" : ISODate("2016-05-02T09:08:56.204Z")
+        }, 
+        {
+            "_id" : ObjectId("5727192c5eb07bc0534e386a"),
+            "grade" : "B",
+            "score" : 20,
+            "date" : ISODate("2016-05-02T09:09:00.345Z")
+        }, 
+        {
+            "_id" : ObjectId("572719335eb07bc0534e386b"),
+            "grade" : "F",
+            "score" : 5,
+            "date" : ISODate("2016-05-02T09:09:07.351Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "96544",
+        "street" : "OUHK road",
+        "building" : "Block J",
+        "coord" : [ 
+            -65.6441, 
+            78.4
+        ]
+    },
+    "__v" : 0
+}
+
+/* 7 */
+{
+    "_id" : ObjectId("572718e55eb07bc0534e3865"),
+    "restaurant_id" : "USA984163",
+    "name" : "USA IC shop",
+    "cuisine" : "Ice Cream",
+    "borough" : "USA",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("572719505eb07bc0534e386d"),
+            "grade" : "B",
+            "score" : 20,
+            "date" : ISODate("2016-05-02T09:09:36.308Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "89461",
+        "street" : "XX road",
+        "building" : "YY Town",
+        "coord" : [ 
+            81, 
+            99
+        ]
+    },
+    "__v" : 0
+}
+
+/* 8 */
+{
+    "_id" : ObjectId("572719ac5eb07bc0534e3874"),
+    "restaurant_id" : "MIX898",
+    "name" : "Mix noodles",
+    "cuisine" : "Fusion",
+    "borough" : "USA",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("572719d65eb07bc0534e3876"),
+            "grade" : "C",
+            "score" : 10,
+            "date" : ISODate("2016-05-02T09:11:50.110Z")
+        }, 
+        {
+            "_id" : ObjectId("572719d95eb07bc0534e3877"),
+            "grade" : "B",
+            "score" : 5,
+            "date" : ISODate("2016-05-02T09:11:53.544Z")
+        }, 
+        {
+            "_id" : ObjectId("572719de5eb07bc0534e3878"),
+            "grade" : "A",
+            "score" : 20,
+            "date" : ISODate("2016-05-02T09:11:58.511Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "89898",
+        "street" : "Street 89",
+        "building" : "Building 898",
+        "coord" : [ 
+            89.8888, 
+            62.44
+        ]
+    },
+    "__v" : 0
+}
+
+/* 9 */
+{
+    "_id" : ObjectId("57271a025eb07bc0534e3879"),
+    "restaurant_id" : "49891",
+    "name" : "Irish Restaurant",
+    "cuisine" : "Irish",
+    "borough" : "Manhattan",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("57271a455eb07bc0534e387b"),
+            "grade" : "C",
+            "score" : 1,
+            "date" : ISODate("2016-05-02T09:13:41.260Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "89413",
+        "street" : "888 road",
+        "building" : "6745",
+        "coord" : [ 
+            78.1651, 
+            23.41894
+        ]
+    },
+    "__v" : 0
+}
+
+/* 10 */
+{
+    "_id" : ObjectId("57271a415eb07bc0534e387a"),
+    "restaurant_id" : "8185181",
+    "name" : "American Restaurant ",
+    "cuisine" : "American",
+    "borough" : "Manhattan",
+    "grades" : [ 
+        {
+            "_id" : ObjectId("57271a4f5eb07bc0534e387c"),
+            "grade" : "C",
+            "score" : 0,
+            "date" : ISODate("2016-05-02T09:13:51.029Z")
+        }
+    ],
+    "address" : {
+        "zipcode" : "48917",
+        "street" : "KKX road",
+        "building" : "16516 Building",
+        "coord" : [ 
+            23.65496, 
+            849.163
+        ]
+    },
+    "__v" : 0
+}
