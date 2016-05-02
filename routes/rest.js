@@ -4,8 +4,8 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
 //var MONGODBURL = 'mongodb://ccccccc:23382338@192.168.1.211/nodejsPJ';
-var MONGODBURL = 'mongodb://ccccccc:23382338@ds064718.mlab.com:64718/restaurantrestaurant'; // 500 MB MongoLab (USA)
-//var MONGODBURL = 'mongodb://ccccccc:23382338@l.ikomoe.com/nodejsPJ';
+//var MONGODBURL = 'mongodb://ccccccc:23382338@ds064718.mlab.com:64718/restaurantrestaurant'; // 500 MB MongoLab (USA)
+var MONGODBURL = 'mongodb://ccccccc:23382338@l.ikomoe.com/nodejsPJ';
 //var MONGODBURL = 'mongodb://*******:********@192.168.1.211/nodejsPJ'; Masked Username Password for github public
 var assert = require('assert');
 var restaurant = require('../models/restaurant');
@@ -14,7 +14,95 @@ var db = mongoose.connection;
 var jsonParser = bodyParser.json();
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
-
+//
+// var index = function (query, next) {
+//
+//     /*  for (var key in query) {
+//      var query_item = query[key];
+//      }*/
+//
+//
+//     var selector = {};
+//     if (query.name) selector.name = {'$regex': query.name};
+//     if (query.cuisine) selector.cuisine = {'$regex': query.cuisine};
+//     if (query.borough) selector.borough = {'$regex': query.borough};
+//     if (query.restaurant_id) selector.restaurant_id = {'$regex': query.restaurant_id};
+//
+//     if (query.building) {
+//         selector['address.building'] = {'$regex': query.building};
+//     }
+//     if (query.zipcode) {
+//         selector['address.zipcode'] = {'$regex': query.zipcode};
+//     }
+//     if (query.street) {
+//         selector['address.street'] = {'$regex': query.street};
+//     }
+//
+//
+//     var sortor = {};
+//
+//     if (query.sort) {
+//         if (query.sort != 'score') {
+//             var direction = (query.direction == null) ? 1 : query.direction;
+//             var undirection;
+//             if (direction < 0) {
+//                 undirection = 1;
+//             } else {
+//                 undirection = -1;
+//             }
+//             sortor[query.sort] = undirection;
+//         }
+//     }
+//
+//
+//     var limit = 100;
+//     if (query.display) {
+//         limit = parseInt(query.display, 10);
+//     }
+//
+//
+//     /*  for (var key in query) {
+//      var query_item = query[key];
+//      }*/
+//
+//     console.log(limit);
+//     //   console.log(sortor);
+//
+//     console.log(selector);
+//
+//     if (!Object.keys(selector).length)selector.name = {'$regex': ''};
+//
+//
+//     mongoose.connect(MONGODBURL, function (err) {
+//         if (err != null) {
+//             db.close();
+//             next({}, "mongoose.connect fail");
+//             return;
+//         }
+//         var restaurant = mongoose.model('Restaurant');
+//         restaurant.find(
+//             selector,
+//             // {
+//             //     grades: 1,
+//             //     borough: 1,
+//             //     cuisine: 1,
+//             //     name: 1,
+//             //     restaurant_id: 1
+//             // }
+//             // ,
+//             function (err, results) {
+//                 if (err != null) {
+//                     console.log(err);
+//                     db.close();
+//                     next({}, "restaurant.find fail");
+//                     return;
+//                 }
+//                 db.close();
+//                 next(results);
+//             }
+//         ).sort(sortor).limit(limit);
+//     });
+// };
 var index = function (query, next) {
 
     /*  for (var key in query) {
@@ -39,21 +127,25 @@ var index = function (query, next) {
     }
 
 
-    var sortor = {};
+    var sortor;
+    var direction;
+    if (query.sort) {
+        direction = (query.direction == null) ? 1 : parseInt(query.direction);
+        sortor = {};
+        sortor[query.sort] = direction;
+    }
+    console.log(direction);
 
-    var limit = 100;
+    var limit;
     if (query.display) {
         limit = parseInt(query.display, 10);
     }
 
+    console.log(limit);
+    console.log(sortor);
+    console.log(selector);
 
-    /*  for (var key in query) {
-     var query_item = query[key];
-     }*/
-
-    // console.log(selector);
-    // console.log(limit);
-    // console.log(sortor);
+    if (!Object.keys(selector).length)selector.name = {'$regex': ''};
 
 
     mongoose.connect(MONGODBURL, function (err) {
@@ -63,17 +155,33 @@ var index = function (query, next) {
             return;
         }
         var restaurant = mongoose.model('Restaurant');
-        restaurant.find(
-            selector,
+        var options = [
+            {$match: selector},
+            {$unwind: {path: "$grades", preserveNullAndEmptyArrays: true}},
             {
-                grades: 1,
-                borough: 1,
-                cuisine: 1,
-                name: 1,
-                restaurant_id: 1
+                $group: {
+                    _id: "$_id",
+                    address: {$first: '$address'},
+                    borough: {$first: '$borough'},
+                    cuisine: {$first: '$cuisine'},
+                    grades: {$addToSet: "$grades"},//rewind
+                    name: {$first: '$name'},
+                    restaurant_id: {$first: '$restaurant_id'},
+                    avgScore: {$avg: '$grades.score'},
+                }
             }
-            ,
-            function (err, results) {
+        ];
+        if (limit) {
+            options.push({$limit: limit});
+        } else {
+            options.push({$limit: 5}); //default limit
+        }
+        if (sortor) {
+            options.push({$sort: sortor});
+        }
+
+        restaurant.aggregate(
+            options, function (err, results) {
                 if (err != null) {
                     console.log(err);
                     db.close();
@@ -82,8 +190,7 @@ var index = function (query, next) {
                 }
                 db.close();
                 next(results);
-            }
-        ).sort(sortor).limit(limit);
+            });
     });
 };
 var create = function (body, next) {
@@ -98,7 +205,7 @@ var create = function (body, next) {
 
         //var _id = new_restaurant._id;
         var id = mongoose.Types.ObjectId();
-        new_restaurant._id=id;
+        new_restaurant._id = id;
         new_restaurant.grades = [];
         new_restaurant.validate(function (err) {
             if (err != null) {
@@ -252,16 +359,31 @@ var pushGrade = function (_id, body, next) {
         var restaurant = mongoose.model('Restaurant');
         var grade = mongoose.model('Grade');
         var new_grade = new grade(body);
-        restaurant.findByIdAndUpdate(_id, {$push: {grades: new_grade}}, function (err, result) {
-            if (err != null) {
-                next({}, "restaurant.findByIdAndUpdate fail");
-                db.close();
-                return;
+        new_grade._id = mongoose.Types.ObjectId();
+        if(new_grade.date==null){
+            new_grade.date=Date.now();
+        }else{
+            if(new_grade.date==''){
+                new_grade.date=Date.now();
             }
-            db.close();
-            next(result);
+        }
+        new_grade.validate(function (err) {
+            if (err != null) {
+                db.close();
+                next({}, err.message, err);
+                return;
+            } else {
+                restaurant.findByIdAndUpdate(_id, {$push: {grades: new_grade}}, {'new': true}, function (err, result) {
+                    if (err != null) {
+                        next({}, "restaurant.findByIdAndUpdate fail");
+                        db.close();
+                        return;
+                    }
+                    db.close();
+                    next(result);
+                });
+            }
         });
-
     });
 };
 var updateGrade = function (_id, body, next) {
@@ -273,23 +395,46 @@ var updateGrade = function (_id, body, next) {
         }
         var restaurant = mongoose.model('Restaurant');
         var grade = mongoose.model('Grade');
-        var new_grades = [];
+        var new_grade = new grade(body);
 
-        body.forEach(function (item) {
-            var new_grade = new grade(item);
-            new_grades.push(new_grade);
-        });
+        if(new_grade.date==null){
+            new_grade.date=Date.now();
+        }
+        var j={
+            'grades.$._id': new_grade._id,
+            'grades.$.date': new_grade.date,
+            'grades.$.grade': new_grade.grade,
+            'grades.$.score': new_grade.score
+        }
 
-
-        restaurant.findByIdAndUpdate(_id, {grades: new_grades}, function (err, result) {
+        new_grade.validate(function (err) {
             if (err != null) {
                 db.close();
-                next({}, "restaurant.findByIdAndUpdate fail");
+                next({}, err.message, err);
                 return;
+            } else {
+                restaurant.update({'grades._id': new_grade._id}, {'$set':  j}, {'new': true}, function (err, result) {
+                    if (err != null) {
+                        next({}, "restaurant.findByIdAndUpdate fail");
+                        db.close();
+                        return;
+                    }
+                    db.close();
+                    next(result);
+                });
+                // restaurant.findByIdAndUpdate(new_grade._id, {'$set':  j}, {'new': true}, function (err, result) {
+                //     if (err != null) {
+                //         next({}, "restaurant.findByIdAndUpdate fail");
+                //         db.close();
+                //         return;
+                //     }
+                //     db.close();
+                //     next(result);
+                // });
             }
-            db.close();
-            next(result);
         });
+
+
     });
 };
 var pullGrade = function (_id, body, next) {
@@ -318,48 +463,48 @@ var pullGrade = function (_id, body, next) {
 //GUI
 router.get('/', function (req, res) {
     index(req.query, function (results, errorMessage) {
-        //avgScore
-        var output_results=[];
-        for(var i=0;i<results.length;i++){
-            var avgScore=0;
-            results[i].grades.forEach(function (grade) {
-                avgScore+=grade.score;
-            });
-            if(results[i].grades.length==0){
-                avgScore= 'N/A';
-            }else {
-                avgScore /= results[i].grades.length;
-                avgScore=avgScore.toFixed(2)
-            }
-            var newResult = JSON.parse(JSON.stringify(results[i]));
-            newResult.avgScore=avgScore;
-            results[i]=newResult;
-        }
-
-        if(req.query.sort){
-            if(req.query.sort=='score'){
-                var direction=(req.query.direction == null) ? 1 : req.query.direction;
-                var undirection;
-                if(direction<0){
-                    undirection=1;
-                }else {
-                    undirection=-1;
-                }
-
-                console.log(123);
-                results.sort(function (a, b) {
-                    if (parseFloat(a.avgScore)  > parseFloat(b.avgScore)) {
-                        return direction;
-                    }
-                    if (parseFloat(a.avgScore) < parseFloat(b.avgScore)) {
-                        return undirection;
-                    }
-                    // a must be equal to b
-                    return 0;
-                });
-
-            }
-        }
+        // //avgScore
+        // var output_results = [];
+        // for (var i = 0; i < results.length; i++) {
+        //     var avgScore = 0;
+        //     results[i].grades.forEach(function (grade) {
+        //         avgScore += grade.score;
+        //     });
+        //     if (results[i].grades.length == 0) {
+        //         avgScore = 'N/A';
+        //     } else {
+        //         avgScore /= results[i].grades.length;
+        //         avgScore = avgScore.toFixed(2)
+        //     }
+        //     var newResult = JSON.parse(JSON.stringify(results[i]));
+        //     newResult.avgScore = avgScore;
+        //     results[i] = newResult;
+        // }
+        //
+        // if (req.query.sort) {
+        //     if (req.query.sort == 'score') {
+        //         var direction = (req.query.direction == null) ? 1 : req.query.direction;
+        //         var undirection;
+        //         if (direction < 0) {
+        //             undirection = 1;
+        //         } else {
+        //             undirection = -1;
+        //         }
+        //
+        //         console.log(123);
+        //         results.sort(function (a, b) {
+        //             if (parseFloat(a.avgScore) > parseFloat(b.avgScore)) {
+        //                 return direction;
+        //             }
+        //             if (parseFloat(a.avgScore) < parseFloat(b.avgScore)) {
+        //                 return undirection;
+        //             }
+        //             // a must be equal to b
+        //             return 0;
+        //         });
+        //
+        //     }
+        // }
 
 
         var j = {};
@@ -370,56 +515,57 @@ router.get('/', function (req, res) {
     })
 });
 
+//GET	    /rest/restaurant	            index       get all
+//POST	    /rest/restaurant	            import      add many*
+//DELETE	/rest/restaurant	            clear       destroy all*
 
-//GET	    /rest/restaurant	            index
-//POST	    /rest/restaurant/create	        create
-//GET	    /rest/restaurant/{_id}	        show
-//PUT	    /rest/restaurant/{_id}	        update
-//DELETE	/rest/restaurant/{_id}	        destroy
+//POST	    /rest/restaurant/create	        create      add one
+//GET	    /rest/restaurant/{_id}	        show        show one
+//PUT	    /rest/restaurant/{_id}	        update      update one
+//DELETE	/rest/restaurant/{_id}	        destroy     destroy one
 router.get('/rest/restaurant', urlencodedParser, function (req, res) {
     index(req.query, function (results, errorMessage) {
-        //avgScore
-        var output_results=[];
-        for(var i=0;i<results.length;i++){
-            var avgScore=0;
-            results[i].grades.forEach(function (grade) {
-                avgScore+=grade.score;
-            });
-            if(results[i].grades.length==0){
-                avgScore= 'N/A';
-            }else {
-                avgScore /= results[i].grades.length;
-                avgScore=avgScore.toFixed(2)
-            }
-            var newResult = JSON.parse(JSON.stringify(results[i]));
-            newResult.avgScore=avgScore;
-            results[i]=newResult;
-        }
-
-        if(req.query.sort){
-            if(req.query.sort=='score'){
-                var direction=(req.query.direction == null) ? 1 : req.query.direction;
-                var undirection;
-                if(direction<0){
-                    undirection=1;
-                }else {
-                    undirection=-1;
-                }
-
-                console.log(123);
-                results.sort(function (a, b) {
-                    if (parseFloat(a.avgScore)  > parseFloat(b.avgScore)) {
-                        return direction;
-                    }
-                    if (parseFloat(a.avgScore) < parseFloat(b.avgScore)) {
-                        return undirection;
-                    }
-                    // a must be equal to b
-                    return 0;
-                });
-
-            }
-        }
+        // //avgScore
+        // var output_results = [];
+        // for (var i = 0; i < results.length; i++) {
+        //     var avgScore = 0;
+        //     results[i].grades.forEach(function (grade) {
+        //         avgScore += grade.score;
+        //     });
+        //     if (results[i].grades.length == 0) {
+        //         avgScore = 'N/A';
+        //     } else {
+        //         avgScore /= results[i].grades.length;
+        //         avgScore = avgScore.toFixed(2)
+        //     }
+        //     var newResult = JSON.parse(JSON.stringify(results[i]));
+        //     newResult.avgScore = avgScore;
+        //     results[i] = newResult;
+        // }
+        //
+        // if (req.query.sort) {
+        //     if (req.query.sort == 'score') {
+        //         var direction = (req.query.direction == null) ? 1 : req.query.direction;
+        //         var undirection;
+        //         if (direction < 0) {
+        //             undirection = 1;
+        //         } else {
+        //             undirection = -1;
+        //         }
+        //
+        //         console.log(123);
+        //         results.sort(function (a, b) {
+        //             if (parseFloat(a.avgScore) > parseFloat(b.avgScore)) {
+        //                 return direction;
+        //             }
+        //             if (parseFloat(a.avgScore) < parseFloat(b.avgScore)) {
+        //                 return undirection;
+        //             }
+        //             return 0;
+        //         });
+        //
+        //     }
+        // }
 
         var j = {};
         j.errorMessages = errorMessage;
@@ -493,31 +639,65 @@ router.delete('/rest/restaurant/:_id', jsonParser, function (req, res) {
     });
 });
 
-//GET	    /rest/restaurant/{restaurant_id}/grade 	                    listGrade
-//POST	    /rest/restaurant/{restaurant_id}/grade                      pushGrade
-//PUT	    /rest/restaurant/{restaurant_id}/grade                      updateGrade
-//DELETE	/rest/restaurant/{restaurant_id}/grade	                    pullGrade
+//GET	    /rest/restaurant/{_id}/grade 	                    listGrade
+//POST	    /rest/restaurant/{_id}/grade                      pushGrade
+//PUT	    /rest/restaurant/{_id}/grade                      updateGrade
+//DELETE	/rest/restaurant/{_id}/grade	                    pullGrade
 router.get('/rest/restaurant/:_id/grade', function (req, res) {
     listGrade(req.params, function (results, errorMessage) {
-        res.json(results);
+        var j = {};
+        j.errorMessages = errorMessage;
+        j.result = results;
+        res.json(j);
         res.end('Connection closed', 200);
     });
 });
 router.post('/rest/restaurant/:_id/grade', function (req, res) {
-    pushGrade(req.params, req.body, function (results, errorMessage) {
-        res.json(results);
+    pushGrade(req.params, req.body, function (results,errorMessage, err) {
+        var j = {};
+        if (errorMessage != null) {
+            j.errorMessages = errorMessage;
+        }
+        if (err != null) {
+            for (var key in err.errors) {
+                var error = err.errors[key];
+                delete error.date;
+                delete error.grade;
+                delete error.score;
+            }
+            j.errors = err.errors;
+        }
+        j.result = results;
+        res.json(j);
         res.end('Connection closed', 200);
     });
 });
-router.put('/rest/restaurant/:_id/grade', function (req, res) {
-    updateGrade(req.params, req.body, function (results, errorMessage) {
-        res.json(results);
+router.put('/rest/restaurant/:_id/grade/:grade_id', function (req, res) {
+    updateGrade(req.params, req.body, function (results, errorMessage, err) {
+        var j = {};
+        if (errorMessage != null) {
+            j.errorMessages = errorMessage;
+        }
+        if (err != null) {
+            for (var key in err.errors) {
+                var error = err.errors[key];
+                delete error.date;
+                delete error.grade;
+                delete error.score;
+            }
+            j.errors = err.errors;
+        }
+        j.result = results;
+        res.json(j);
         res.end('Connection closed', 200);
     });
 });
 router.delete('/rest/restaurant/:_id/grade', function (req, res) {
     pullGrade(req.params, req.body, function (results, errorMessage) {
-        res.json(results);
+        var j = {};
+        j.errorMessages = errorMessage;
+        j.result = results;
+        res.json(j);
         res.end('Connection closed', 200);
     });
 });

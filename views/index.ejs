@@ -1,16 +1,16 @@
 <link href="/css/bootstrap.min.css" rel="stylesheet">
 
 
-
-
-<% if(errorMessages!=null){%>
-    <div class="alert alert-danger" role="alert">
-        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        <span class="sr-only">Error:</span>
-        <%= errorMessages %>
+<% if(errorMessages != null){ %>
+<div class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    <%= errorMessages %>
 </div>
-<%}else{%>
-<button type="button" class="btn btn-success btn-lg" id="showCreateModelBtn" data-toggle="modal" data-target="#createModal">Create Resaurant</button>
+<% }else{ %>
+<button type="button" class="btn btn-success btn-lg" id="showCreateModelBtn" data-toggle="modal"
+        data-target="#createModal">Create Restaurant
+</button>
 
 <div class="panel panel-info">
     <div class="panel-heading">
@@ -53,21 +53,21 @@
             </div>
             <div class="form-group">
                 <label for="sort">Sort By:</label>
-                <select class="form-control" id="sort">
+                <select class="form-control" id="search_sort">
                     <option value="name">Name</option>
                     <option value="cuisine">Cuisine</option>
                     <option value="borough">Borough</option>
                     <option value="building">Building</option>
                     <option value="zipcode">Zipcode</option>
                     <option value="street">Street</option>
-                    <option value="score">Score</option>
+                    <option value="avgScore">Score</option>
                     <option value="restaurant_id">Restaurant ID</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="direction"></label>
-                <select class="form-control" id="direction">
-                    <option value="1">Ascending</option>
+                <select class="form-control" id="search_direction">
+                    <option value="1" selected>Ascending</option>
                     <option value="-1">Descending</option>
                 </select>
             </div>
@@ -75,14 +75,14 @@
         <form class="form-inline">
             <div class="form-group">
                 <label for="display">Display:</label>
-                <select class="form-control" id="display">
+                <select class="form-control" id="search_display">
                     <option value="100" selected>100</option>
                     <option value="500">500</option>
                     <option value="1000">1000</option>
                     <option value="all">All</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="button" class="btn btn-primary searchBtn">Search</button>
         </form>
     </div>
 </div>
@@ -127,7 +127,9 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <div class="alert alert-success" id="create_successMessage" role="alert" style="text-align:left">Create Success</div>
+                <div class="alert alert-success" id="create_successMessage" role="alert" style="text-align:left">Create
+                    Success
+                </div>
                 <div class="alert alert-danger" id="create_errorMessage" role="alert" style="text-align:left"></div>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-success" id="createModalSubmut">Create</button>
@@ -173,7 +175,9 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <div class="alert alert-success" id="edit_successMessage" role="alert" style="text-align:left">Update Success</div>
+                <div class="alert alert-success" id="edit_successMessage" role="alert" style="text-align:left">Update
+                    Success
+                </div>
                 <div class="alert alert-danger" id="edit_errorMessage" role="alert" style="text-align:left"></div>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" id="editModalSubmut" class="btn btn-warning">Update</button>
@@ -199,7 +203,7 @@
                     <label for="delete_name">Name</label>
                     <input type="text" class="form-control" id="delete_name" placeholder="" disabled>
                     <label for="delete_restaurant_id">Restaurant ID</label>
-                    <input type="text" class="form-control" id="delete_restaurant_id" placeholder="" disabled >
+                    <input type="text" class="form-control" id="delete_restaurant_id" placeholder="" disabled>
                     <div class="panel panel-default" style="margin-top:10px;">
                         <div class="panel-heading">
                             <h3 class="panel-title">Address</h3>
@@ -219,7 +223,9 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <div class="alert alert-success" id="delete_successMessage" role="alert" style="text-align:left">Delete Success</div>
+                <div class="alert alert-success" id="delete_successMessage" role="alert" style="text-align:left">Delete
+                    Success
+                </div>
                 <div class="alert alert-danger" id="delete_errorMessage" role="alert" style="text-align:left"></div>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" id="deleteModalSubmut" class="btn btn-danger">Delete</button>
@@ -227,52 +233,211 @@
         </div>
     </div>
 </div>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Cuisine</th>
-                <th>Borough</th>
-                <th>Score</th>
-                <th>Read Deatils</th>
-                <th>Update</th>
-                <th>Delete</th>
-            </tr>
-            </thead>
-            <tbody>
+<div class="modal fade" id="readModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="read_ModalLabel">Read Resaurant</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="read_id">
+                    <label for="read_borough">Borough</label>
+                    <input type="text" class="form-control" id="read_borough" placeholder="" disabled="">
+                    <label for="read_cuisine">Cuisine</label>
+                    <input type="text" class="form-control" id="read_cuisine" placeholder="" disabled="">
+                    <label for="read_name">Name</label>
+                    <input type="text" class="form-control" id="read_name" placeholder="" disabled="">
+                    <label for="read_restaurant_id">Restaurant ID</label>
+                    <input type="text" class="form-control" id="read_restaurant_id" placeholder="" disabled="">
+                    <div class="panel panel-default" style="margin-top:10px;">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Address</h3>
+                        </div>
+                        <div class="panel-body">
+                            <label for="read_building">Building</label>
+                            <input type="text" class="form-control" id="read_building" placeholder="" disabled="">
+                            <label for="read_zipcode">Zipcode</label>
+                            <input type="text" class="form-control" id="read_zipcode" placeholder="" disabled="">
+                            <label for="read_street">Street</label>
+                            <input type="text" class="form-control" id="read_street" placeholder="" disabled="">
+                            <label for="read_coord">Coord</label>
+                            <input type="text" class="form-control" id="read_coord_x" placeholder="X" disabled="">
+                            <input type="text" class="form-control" id="read_coord_y" placeholder="Y" disabled="">
+                        </div>
+                    </div>
+                    <div class="panel panel-default" style="margin-top:10px;">
+                        <div class="panel-heading" style="">
+                            <h3 class="panel-title">Grades<span>
+                                <button type="button" class="btn btn-sm btn-success addGradeModalBtn"
+                                        style="float:right; padding: 0px 16px;">Add</button>
+                            </span></h3>
 
-            <% for (var i = 0; i < result.length; i++) {
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-striped gradeTable">
+                                <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Grade</th>
+                                    <th>Score</th>
+                                    <th>Update</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addGradeModal" tabindex="-1" role="dialog" aria-labelledby="addGradeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="addGradeModalLabel">Add Grade</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label for="input_date">Date</label>
+                    <input type="text" class="form-control" id="input_date" placeholder="">
+                    <label for="input_grade">Grade</label>
+                    <input type="text" class="form-control" id="input_grade" placeholder="">
+                    <label for="input_score">Score</label>
+                    <input type="text" class="form-control" id="input_score" placeholder="">
+                    </br>
+                    <input type="reset" id="addGradeModalResetBtn" class="btn btn-default" value="Reset"/>
+                </form>
+                <div class="modal-footer">
+                    <div class="alert alert-success" id="addGrade_successMessage" role="alert" style="text-align:left">
+                        Add
+                        Success
+                    </div>
+                    <div class="alert alert-danger" id="addGrade_errorMessage" role="alert"
+                         style="text-align:left"></div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-warning" id="addGradeModalSubmut">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editGradeModal" tabindex="-1" role="dialog" aria-labelledby="editGradeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editGradeModalLabel">Update Grade</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" class="form-control" id="_id" placeholder="">
+                    <label for="input_date">Date</label>
+                    <input type="text" class="form-control" id="input_date" placeholder="">
+                    <label for="input_grade">Grade</label>
+                    <input type="text" class="form-control" id="input_grade" placeholder="">
+                    <label for="input_score">Score</label>
+                    <input type="text" class="form-control" id="input_score" placeholder="">
+                </form>
+                <div class="modal-footer">
+                    <div class="alert alert-success" id="editGrade_successMessage" role="alert" style="text-align:left">
+                        Edit
+                        Success
+                    </div>
+                    <div class="alert alert-danger" id="editGrade_errorMessage" role="alert"
+                         style="text-align:left"></div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-warning"  id="editGradeModalSubmut">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteGradeModal" tabindex="-1" role="dialog" aria-labelledby="deleteGradeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="deleteGradeModalLabel">Sure to delete grade record?</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" class="form-control" id="_id" placeholder="">
+                    <label for="input_date">Date</label>
+                    <input type="text" class="form-control" id="input_date" placeholder="" disabled>
+                    <label for="input_grade">Grade</label>
+                    <input type="text" class="form-control" id="input_grade" placeholder="" disabled>
+                    <label for="input_score">Score</label>
+                    <input type="text" class="form-control" id="input_score" placeholder="" disabled>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<table class="table table-hover restaurantTable">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Cuisine</th>
+        <th>Borough</th>
+        <th>Score</th>
+        <th>Read Deatils</th>
+        <th>Update</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <% for (var i = 0; i < result.length; i++) {
 //                var avgScore = 0;
 //                result[i].grades.forEach(function (grade) {
 //                    avgScore += grade.score;
 //                })
-//                if(result[i].grades.length==0){
-//                    avgScore= 'N/A';
-//                }else {
-//                    avgScore /= result[i].grades.length;
-//                    avgScore=avgScore.toFixed(2)
-//                }
-
-            %>
-            <tr id="r<%= result[i]._id %>" data-_id="<%= result[i]._id %>">
-                <th scope="row"><%= result[i].name %></th>
-                <td><%= result[i].cuisine %></td>
-                <td><%= result[i].borough %></td>
-                <td><%= result[i].avgScore %></td>
-                <td>
-                    <button type="button" class="btn btn-info">Read Deatils</button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-warning showEditModelBtn">Update
-                    </button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger showDeleteModelBtn">Delete</button>
-                </td>
-            </tr>
-            <% } %>
-            </tbody>
-        </table>
+        if (result[i].avgScore == null) {
+            result[i].avgScore = 'N/A';
+        } else {
+            result[i].avgScore = result[i].avgScore.toFixed(2)
+        }
+    %>
+    <tr id="r<%= result[i]._id %>" data-_id="<%= result[i]._id %>">
+        <th scope="row"><%= result[i].name %></th>
+        <td><%= result[i].cuisine %></td>
+        <td><%= result[i].borough %></td>
+        <td><%= result[i].avgScore %></td>
+        <td>
+            <button type="button" class="btn btn-info showReadModelBtn">Read Deatils</button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-warning showEditModelBtn">Update
+            </button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger showDeleteModelBtn">Delete</button>
+        </td>
+    </tr>
+    <% } %>
+    </tbody>
+</table>
 <% } %>
 
 <script src="/js/jquery.min.js"></script>
@@ -281,6 +446,7 @@
     $(document).ready(function () {
 
         $('#showCreateModelBtn').click(function () {
+            $("#createModal input").prop('disabled', false);
             $("#createModalResetBtn").click();
             $('#create_successMessage').hide();
             $('#create_errorMessage').text('').hide();
@@ -289,18 +455,18 @@
         $('#createModalSubmut').click(function () {
             var button = $(this);
             button.button('loading');
-            var j={};
-            j.borough= $('.modal-body #input_borough').val();
-            j.cuisine= $('.modal-body #input_cuisine').val();
-            j.name= $('.modal-body #input_name').val();
-            j.restaurant_id= $('.modal-body #input_restaurant_id').val();
+            var j = {};
+            j.borough = $('.modal-body #input_borough').val();
+            j.cuisine = $('.modal-body #input_cuisine').val();
+            j.name = $('.modal-body #input_name').val();
+            j.restaurant_id = $('.modal-body #input_restaurant_id').val();
             j.address = {};
-            j.address.building= $('.modal-body #input_building').val();
-            j.address.coord=[];
-            j.address.coord[0]= $('.modal-body #input_coord_x').val();
-            j.address.coord[1]= $('.modal-body #input_coord_y').val();
+            j.address.building = $('.modal-body #input_building').val();
+            j.address.coord = [];
+            j.address.coord[0] = $('.modal-body #input_coord_x').val();
+            j.address.coord[1] = $('.modal-body #input_coord_y').val();
             j.address.street = $('.modal-body #input_street').val();
-            j.address.zipcode= $('.modal-body #input_zipcode').val();
+            j.address.zipcode = $('.modal-body #input_zipcode').val();
 
 
             $.ajax({
@@ -309,7 +475,7 @@
                 contentType: "application/json",
                 url: "rest/restaurant/create",
                 data: JSON.stringify(j),
-                success: function(data,status){
+                success: function (data, status) {
                     if (status = !'success') {
                         $('#create_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
                         button.button('reset');
@@ -318,10 +484,10 @@
 
                     if (data.errorMessages != null) {
                         if (data.errors != null) {
-                            data.errorMessages+='</br></br>'
+                            data.errorMessages += '</br></br>'
                             for (var key in data.errors) {
                                 var error = data.errors[key];
-                                data.errorMessages+=error.path+' : '+error.kind+'</br>';
+                                data.errorMessages += error.path + ' : ' + error.kind + '</br>';
                             }
                         }
                         $('#create_errorMessage').html(data.errorMessages).fadeIn();
@@ -330,8 +496,121 @@
                     }
 
                     console.log(data);
+
+                    $("#createModal input").prop('disabled', true);
+
                     $('#create_errorMessage').fadeOut();
                     $('#create_successMessage').fadeIn();
+
+                    var outputhtml = '';
+                    outputhtml += '<tr id="r' + data.result._id + '" data-_id="' + data.result._id + '">';
+                    outputhtml += '<th scope="row">' + data.result.name + '</th>';
+                    outputhtml += '<td>' + data.result.cuisine + '</td>';
+                    outputhtml += '<td>' + data.result.borough + '</td>';
+                    outputhtml += '<td>N/A</td>';
+                    outputhtml += '<td><button type="button" class="btn btn-info">Read Deatils</button></td>';
+                    outputhtml += '<td><button type="button" class="btn btn-warning showEditModelBtn">Update</button></td>';
+                    outputhtml += '<td><button type="button" class="btn btn-danger showDeleteModelBtn">Delete</button></td>';
+                    outputhtml += '</tr>';
+
+                    $('.restaurantTable tbody > tr:first').before(outputhtml);
+
+                    $('.restaurantTable tbody > tr:first .showEditModelBtn').click(function () {
+                        var button = $(this);
+                        var _id = button.closest("tr").data('_id');
+                        button.button('loading');
+                        $.get("rest/restaurant/" + _id,
+                                {},
+                                function (data, status) {
+                                    button.button('reset');
+
+                                    if (status = !'success') {
+                                        alert('AJAX HTTP STATUS FAIL');
+                                        return;
+                                    }
+                                    if (data.errorMessage != null) {
+                                        alert(data.errorMessage);
+                                        return;
+                                    }
+                                    if (data.result == null) {
+                                        alert("Not Found");
+                                        return;
+                                    }
+
+                                    //  console.log(data);
+                                    var modal = $(this);
+                                    $('.modal-body #edit_borough').val(data.result.borough);
+                                    $('.modal-body #edit_cuisine').val(data.result.cuisine);
+                                    $('.modal-body #edit_name').val(data.result.name);
+                                    $('.modal-body #edit_id').val(data.result._id);
+                                    $('.modal-body #edit_restaurant_id').val(data.result.restaurant_id);
+                                    $('.modal-body #edit_building').val(data.result.address.building);
+                                    $('.modal-body #edit_zipcode').val(data.result.address.zipcode);
+                                    $('.modal-body #edit_street').val(data.result.address.street);
+                                    $('.modal-body #edit_coord_x').val(data.result.address.coord[0]);
+                                    $('.modal-body #edit_coord_y').val(data.result.address.coord[1]);
+
+
+                                    $('#edit_successMessage').hide();
+                                    $('#edit_errorMessage').text('').hide();
+                                    $('#editModal').modal("show")
+
+                                }).fail(function () {
+                            alert('AJAX HTTP STATUS FAIL');
+                            button.button('reset');
+                        });
+
+                    })
+                    $('.restaurantTable tbody > tr:first .showDeleteModelBtn').click(function () {
+                        var button = $(this);
+                        var _id = button.closest("tr").data('_id');
+                        button.button('loading');
+                        $.get("rest/restaurant/" + _id,
+                                {},
+                                function (data, status) {
+                                    button.button('reset');
+
+                                    if (status = !'success') {
+                                        alert('AJAX HTTP STATUS FAIL');
+                                        return;
+                                    }
+                                    if (data.errorMessage != null) {
+                                        alert(data.errorMessage);
+                                        return;
+                                    }
+
+                                    if (data.result == null) {
+                                        alert("Not Found");
+                                        return;
+                                    }
+
+                                    //  console.log(data);
+                                    var modal = $(this);
+                                    $('.modal-body #delete_borough').val(data.result.borough);
+                                    $('.modal-body #delete_cuisine').val(data.result.cuisine);
+                                    $('.modal-body #delete_name').val(data.result.name);
+                                    $('.modal-body #delete_id').val(data.result._id);
+                                    $('.modal-body #delete_restaurant_id').val(data.result.restaurant_id);
+                                    $('.modal-body #delete_building').val(data.result.address.building);
+                                    $('.modal-body #delete_zipcode').val(data.result.address.zipcode);
+                                    $('.modal-body #delete_street').val(data.result.address.street);
+                                    $('.modal-body #delete_coord_x').val(data.result.address.coord[0]);
+                                    $('.modal-body #delete_coord_y').val(data.result.address.coord[1]);
+
+
+                                    $('#delete_successMessage').hide();
+                                    $('#delete_errorMessage').text('').hide();
+                                    $('#deleteModal').modal("show")
+
+                                    $('#deleteModalSubmut').show();
+
+                                }).fail(function () {
+                            alert('AJAX HTTP STATUS FAIL');
+                            button.button('reset');
+                        });
+
+                    })
+
 //                    var tr=$('#r'+$('.modal-body #old_edit_restaurant_id').val());
 //                    tr.find("th").eq(0).text(data.result.name);
 //                    tr.find("td").eq(0).text(data.result.cuisine);
@@ -341,7 +620,7 @@
                     button.hide();
                 }
             }).fail(function () {
-                $('#create_errorMessage').fadeOut(100, function() {
+                $('#create_errorMessage').fadeOut(100, function () {
                     $('#create_errorMessage').text('Network Error').fadeIn();
                 });
                 button.button('reset');
@@ -397,28 +676,28 @@
         $('#editModalSubmut').click(function () {
             var button = $(this);
             button.button('loading');
-            var j={};
-            j._id= $('.modal-body #edit_id').val();
-            j.borough= $('.modal-body #edit_borough').val();
-            j.cuisine= $('.modal-body #edit_cuisine').val();
-            j.name= $('.modal-body #edit_name').val();
-            j.restaurant_id= $('.modal-body #edit_restaurant_id').val();
+            var j = {};
+            j._id = $('.modal-body #edit_id').val();
+            j.borough = $('.modal-body #edit_borough').val();
+            j.cuisine = $('.modal-body #edit_cuisine').val();
+            j.name = $('.modal-body #edit_name').val();
+            j.restaurant_id = $('.modal-body #edit_restaurant_id').val();
             j.address = {};
-            j.address.building= $('.modal-body #edit_building').val();
-            j.address.coord=[];
-            j.address.coord[0]= $('.modal-body #edit_coord_x').val();
-            j.address.coord[1]= $('.modal-body #edit_coord_y').val();
+            j.address.building = $('.modal-body #edit_building').val();
+            j.address.coord = [];
+            j.address.coord[0] = $('.modal-body #edit_coord_x').val();
+            j.address.coord[1] = $('.modal-body #edit_coord_y').val();
             j.address.street = $('.modal-body #edit_street').val();
-            j.address.zipcode= $('.modal-body #edit_zipcode').val();
+            j.address.zipcode = $('.modal-body #edit_zipcode').val();
 
 
             $.ajax({
                 type: 'PUT',
                 dataType: 'json',
                 contentType: "application/json",
-                url: "rest/restaurant/"+$('.modal-body #edit_id').val(),
+                url: "rest/restaurant/" + $('.modal-body #edit_id').val(),
                 data: JSON.stringify(j),
-                success: function(data,status){
+                success: function (data, status) {
                     if (status = !'success') {
                         $('#edit_successMessage').fadeOut();
                         $('#edit_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
@@ -427,10 +706,10 @@
                     }
                     if (data.errorMessages != null) {
                         if (data.errors != null) {
-                            data.errorMessages+='</br></br>'
+                            data.errorMessages += '</br></br>'
                             for (var key in data.errors) {
                                 var error = data.errors[key];
-                                data.errorMessages+=error.path+' : '+error.kind+'</br>';
+                                data.errorMessages += error.path + ' : ' + error.kind + '</br>';
                             }
                         }
 
@@ -440,20 +719,20 @@
                         return;
                     }
 
-                    var tr=$('#r'+$('.modal-body #edit_id').val());
+                    var tr = $('#r' + $('.modal-body #edit_id').val());
                     tr.find("th").eq(0).text(data.result.name);
                     tr.find("td").eq(0).text(data.result.cuisine);
                     tr.find("td").eq(1).text(data.result.borough);
 
                     $('#edit_errorMessage').fadeOut();
-                    $('#edit_successMessage').fadeOut(100, function() {
+                    $('#edit_successMessage').fadeOut(100, function () {
                         $('#edit_successMessage').fadeIn();
                     });
                     button.button('reset');
                 }
             }).fail(function () {
                 $('#edit_successMessage').fadeOut();
-                $('#edit_errorMessage').fadeOut(100, function() {
+                $('#edit_errorMessage').fadeOut(100, function () {
                     $('#edit_errorMessage').text('Network Error').fadeIn();
                 });
                 button.button('reset');
@@ -508,7 +787,7 @@
                 button.button('reset');
             });
 
-        })
+        });
         $('#deleteModalSubmut').click(function () {
             var button = $(this);
             button.button('loading');
@@ -517,8 +796,8 @@
                 type: 'DELETE',
                 dataType: 'json',
                 contentType: "application/json",
-                url: "rest/restaurant/"+$('.modal-body #delete_id').val(),
-                success: function(data,status){
+                url: "rest/restaurant/" + $('.modal-body #delete_id').val(),
+                success: function (data, status) {
                     if (status = !'success') {
                         $('#delete_successMessage').fadeOut();
                         $('#delete_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
@@ -534,18 +813,514 @@
 
                     $('#delete_errorMessage').fadeOut();
                     $('#delete_successMessage').fadeIn();
-                    $('#r'+$('.modal-body #delete_id').val()).remove();
+                    $('#r' + $('.modal-body #delete_id').val()).remove();
                     button.button('reset');
                     button.hide();
                 }
             }).fail(function () {
                 $('#delete_successMessage').fadeOut();
-                $('#delete_errorMessage').fadeOut(100, function() {
+                $('#delete_errorMessage').fadeOut(100, function () {
                     $('#delete_errorMessage').text('Network Error').fadeIn();
                 });
                 button.button('reset');
             });
         });
+
+        $('.searchBtn').click(function () {
+            var button = $(this);
+            button.button('loading');
+
+            var name = $('#search_name').val();
+            var cuisine = $('#search_cuisine').val();
+            var borough = $('#search_borough').val();
+            var building = $('#search_building').val();
+            var zipcode = $('#search_zipcode').val();
+            var street = $('#search_street').val();
+            var restaurantId = $('#search_restaurantId').val();
+            var direction = $('#search_direction').val();
+            var sort = $('#search_sort').val();
+            var display = $('#search_display').val();
+
+            var j = {};
+            j.name = name;
+            j.cuisine = cuisine;
+            j.borough = borough;
+            j.building = building;
+            j.zipcode = zipcode;
+            j.street = street;
+            j.restaurant_id = restaurantId;
+            j.direction = direction;
+            j.sort = sort;
+            j.display = display;
+
+            $.get('rest/restaurant',
+                    j,
+                    function (data, status) {
+                        button.button('reset');
+
+                        if (status = !'success') {
+                            alert('AJAX HTTP STATUS FAIL');
+                            return;
+                        }
+                        if (data.errorMessage != null) {
+                            alert(data.errorMessage);
+                            return;
+                        }
+                        if (data.result == null) {
+                            alert("Not Found");
+                            return;
+                        }
+                        console.log(data);
+
+                        var outputhtml = '';
+
+                        for (var i = 0; i < data.result.length; i++) {
+                            if (data.result[i].avgScore == null) {
+                                data.result[i].avgScore = 'N/A';
+                            } else {
+                                data.result[i].avgScore = parseFloat(data.result[i].avgScore).toFixed(2);
+                            }
+                            outputhtml += '<tr id="' + data.result[i]._id + '" data-_id="' + data.result[i]._id + '">';
+                            outputhtml += '<th scope="row">' + data.result[i].name + '</th>';
+                            outputhtml += '<td>' + data.result[i].cuisine + '</td>';
+                            outputhtml += '<td>' + data.result[i].borough + '</td>';
+                            outputhtml += '<td>' + data.result[i].avgScore + '</td>';
+                            outputhtml += '<td><button type="button" class="btn btn-info showReadModelBtn">Read Deatils</button></td>';
+                            outputhtml += '<td><button type="button" class="btn btn-warning showEditModelBtn">Update</button></td>';
+                            outputhtml += '<td><button type="button" class="btn btn-danger showDeleteModelBtn">Delete</button></td>';
+                            outputhtml += '</tr>';
+                        }
+
+
+                        $('.restaurantTable tbody').html(outputhtml);
+                        $('.showReadModelBtn').click(function () {
+                            var button = $(this);
+                            var _id = button.closest("tr").data('_id');
+                            button.button('loading');
+                            $.get("rest/restaurant/" + _id,
+                                    {},
+                                    function (data, status) {
+                                        button.button('reset');
+
+                                        if (status = !'success') {
+                                            alert('AJAX HTTP STATUS FAIL');
+                                            return;
+                                        }
+                                        if (data.errorMessage != null) {
+                                            alert(data.errorMessage);
+                                            return;
+                                        }
+
+                                        if (data.result == null) {
+                                            alert("Not Found");
+                                            return;
+                                        }
+
+                                        //  console.log(data);
+                                        var modal = $(this);
+                                        $('.modal-body #read_borough').val(data.result.borough);
+                                        $('.modal-body #read_cuisine').val(data.result.cuisine);
+                                        $('.modal-body #read_name').val(data.result.name);
+                                        $('.modal-body #read_id').val(data.result._id);
+                                        $('.modal-body #read_restaurant_id').val(data.result.restaurant_id);
+                                        $('.modal-body #read_building').val(data.result.address.building);
+                                        $('.modal-body #read_zipcode').val(data.result.address.zipcode);
+                                        $('.modal-body #read_street').val(data.result.address.street);
+                                        $('.modal-body #read_coord_x').val(data.result.address.coord[0]);
+                                        $('.modal-body #read_coord_y').val(data.result.address.coord[1]);
+
+
+                                        var gradeTbody = '';
+                                        data.result.grades.forEach(function (grade) {
+                                            var date = grade.date;
+                                            var datestr = date.replace('T', ' ').slice(0, 16);
+                                            gradeTbody += '<tr>';
+                                            gradeTbody += '<td class="datetd" value="' + grade.date + '">' + datestr + '</td>';
+                                            gradeTbody += '<td class="gradetd" value="' + grade.grade + '">' + grade.grade + '</td>';
+                                            gradeTbody += '<td class="scoretd" value="' + grade.score + '">' + grade.score + '</td>';
+                                            gradeTbody += '<td><button type="button" class="btn btn-warning editGradeModalBtn" >Update</button></td>';
+                                            gradeTbody += '<td><button type="button" class="btn btn-danger deleteGradeModalBtn" >Delete</button></td>';
+                                            gradeTbody += '</tr>';
+                                        })
+                                        $('#readModal tbody').html(gradeTbody);
+
+                                        $('.editGradeModalBtn').click(function () {
+                                            var button = $(this);
+                                            var tr = button.closest("tr");
+
+
+                                            $('#editGradeModal')
+
+                                            $('#editGradeModal').modal("show")
+
+
+                                        })
+
+                                        $('#readModal').modal("show")
+
+                                    }).fail(function () {
+                                alert('AJAX HTTP STATUS FAIL');
+                                button.button('reset');
+                            });
+
+                        });
+                        $('.showEditModelBtn').click(function () {
+                            var button = $(this);
+                            var _id = button.closest("tr").data('_id');
+                            button.button('loading');
+                            $.get("rest/restaurant/" + _id,
+                                    {},
+                                    function (data, status) {
+                                        button.button('reset');
+
+                                        if (status = !'success') {
+                                            alert('AJAX HTTP STATUS FAIL');
+                                            return;
+                                        }
+                                        if (data.errorMessage != null) {
+                                            alert(data.errorMessage);
+                                            return;
+                                        }
+                                        if (data.result == null) {
+                                            alert("Not Found");
+                                            return;
+                                        }
+
+                                        //  console.log(data);
+                                        var modal = $(this);
+                                        $('.modal-body #edit_borough').val(data.result.borough);
+                                        $('.modal-body #edit_cuisine').val(data.result.cuisine);
+                                        $('.modal-body #edit_name').val(data.result.name);
+                                        $('.modal-body #edit_id').val(data.result._id);
+                                        $('.modal-body #edit_restaurant_id').val(data.result.restaurant_id);
+                                        $('.modal-body #edit_building').val(data.result.address.building);
+                                        $('.modal-body #edit_zipcode').val(data.result.address.zipcode);
+                                        $('.modal-body #edit_street').val(data.result.address.street);
+                                        $('.modal-body #edit_coord_x').val(data.result.address.coord[0]);
+                                        $('.modal-body #edit_coord_y').val(data.result.address.coord[1]);
+
+
+                                        $('#edit_successMessage').hide();
+                                        $('#edit_errorMessage').text('').hide();
+                                        $('#editModal').modal("show")
+
+                                    }).fail(function () {
+                                alert('AJAX HTTP STATUS FAIL');
+                                button.button('reset');
+                            });
+
+                        })
+                        $('.showDeleteModelBtn').click(function () {
+                            var button = $(this);
+                            var _id = button.closest("tr").data('_id');
+                            button.button('loading');
+                            $.get("rest/restaurant/" + _id,
+                                    {},
+                                    function (data, status) {
+                                        button.button('reset');
+
+                                        if (status = !'success') {
+                                            alert('AJAX HTTP STATUS FAIL');
+                                            return;
+                                        }
+                                        if (data.errorMessage != null) {
+                                            alert(data.errorMessage);
+                                            return;
+                                        }
+
+                                        if (data.result == null) {
+                                            alert("Not Found");
+                                            return;
+                                        }
+
+                                        //  console.log(data);
+                                        var modal = $(this);
+                                        $('.modal-body #delete_borough').val(data.result.borough);
+                                        $('.modal-body #delete_cuisine').val(data.result.cuisine);
+                                        $('.modal-body #delete_name').val(data.result.name);
+                                        $('.modal-body #delete_id').val(data.result._id);
+                                        $('.modal-body #delete_restaurant_id').val(data.result.restaurant_id);
+                                        $('.modal-body #delete_building').val(data.result.address.building);
+                                        $('.modal-body #delete_zipcode').val(data.result.address.zipcode);
+                                        $('.modal-body #delete_street').val(data.result.address.street);
+                                        $('.modal-body #delete_coord_x').val(data.result.address.coord[0]);
+                                        $('.modal-body #delete_coord_y').val(data.result.address.coord[1]);
+
+
+                                        $('#delete_successMessage').hide();
+                                        $('#delete_errorMessage').text('').hide();
+                                        $('#deleteModal').modal("show")
+
+                                        $('#deleteModalSubmut').show();
+
+                                    }).fail(function () {
+                                alert('AJAX HTTP STATUS FAIL');
+                                button.button('reset');
+                            });
+
+                        })
+                    }
+            ).fail(function () {
+                alert('AJAX HTTP STATUS FAIL');
+                button.button('reset');
+            });
+
+
+        })
+
+        $('.showReadModelBtn').click(function () {
+            var button = $(this);
+            var _id = button.closest("tr").data('_id');
+            button.button('loading');
+            $.get("rest/restaurant/" + _id,
+                    {},
+                    function (data, status) {
+                        button.button('reset');
+
+                        if (status = !'success') {
+                            alert('AJAX HTTP STATUS FAIL');
+                            return;
+                        }
+                        if (data.errorMessage != null) {
+                            alert(data.errorMessage);
+                            return;
+                        }
+
+                        if (data.result == null) {
+                            alert("Not Found");
+                            return;
+                        }
+
+                        //  console.log(data);
+                        var modal = $(this);
+                        $('.modal-body #read_borough').val(data.result.borough);
+                        $('.modal-body #read_cuisine').val(data.result.cuisine);
+                        $('.modal-body #read_name').val(data.result.name);
+                        $('.modal-body #read_id').val(data.result._id);
+                        $('.modal-body #read_restaurant_id').val(data.result.restaurant_id);
+                        $('.modal-body #read_building').val(data.result.address.building);
+                        $('.modal-body #read_zipcode').val(data.result.address.zipcode);
+                        $('.modal-body #read_street').val(data.result.address.street);
+                        $('.modal-body #read_coord_x').val(data.result.address.coord[0]);
+                        $('.modal-body #read_coord_y').val(data.result.address.coord[1]);
+
+
+                        var gradeTbody = '';
+                        data.result.grades.forEach(function (grade) {
+                            var date = grade.date;
+                            var datestr = date.replace('T', ' ').slice(0, 16);
+                            gradeTbody += '<tr id="g' + grade._id + '"  data-_id=' + grade._id + '>';
+                            gradeTbody += '<td data-datetd= "' + grade.date + '">' + datestr + '</td>';
+                            gradeTbody += '<td data-gradetd="' + grade.grade + '">' + grade.grade + '</td>';
+                            gradeTbody += '<td data-scoretd="' + grade.score + '">' + grade.score + '</td>';
+                            gradeTbody += '<td><button type="button" class="btn btn-warning editGradeModalBtn" >Update</button></td>';
+                            gradeTbody += '<td><button type="button" class="btn btn-danger deleteGradeModalBtn" >Delete</button></td>';
+                            gradeTbody += '</tr>';
+                        })
+                        $('#readModal tbody').html(gradeTbody);
+
+                        $('.editGradeModalBtn').click(function () {
+                            var button = $(this);
+                            var tr = button.closest("tr");
+
+                            $('#editGradeModal #_id').val(tr.data('_id'));
+                            $('#editGradeModal #input_date').val(tr.find("td").eq(0).data('datetd'));
+                            $('#editGradeModal #input_grade').val(tr.find("td").eq(1).data('gradetd'));
+                            $('#editGradeModal #input_score').val(tr.find("td").eq(2).data('scoretd'));
+
+                            $('#editGrade_successMessage').hide();
+                            $('#editGrade_errorMessage').text('').hide();
+                            $('#editGradeModal').modal("show");
+                        })
+
+                        $('.deleteGradeModalBtn').click(function () {
+                            var button = $(this);
+                            var tr = button.closest("tr");
+                            $('#deleteGradeModal').modal("show");
+                        })
+
+                        $('#readModal').modal("show")
+
+                    }).fail(function () {
+                alert('AJAX HTTP STATUS FAIL');
+                button.button('reset');
+            });
+
+        });
+
+
+        $('.addGradeModalBtn').click(function () {
+            $("#addGradeModal input").prop('disabled', false);
+            $('#addGradeModalResetBtn').click();
+            $('#addGrade_successMessage').hide();
+            $('#addGrade_errorMessage').text('').hide();
+            $('#addGradeModalSubmut').show();
+            $('#addGradeModal').modal("show");
+        })
+
+        $('#addGradeModalSubmut').click(function () {
+            var button = $(this);
+            var j = {};
+            j.date = $('.modal-body #input_date').val();
+            j.grade = $('.modal-body #input_grade').val();
+            j.score = $('.modal-body #input_score').val();
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: "application/json",
+                url: "rest/restaurant/" + $('.modal-body #read_id').val() + "/grade",
+                data: JSON.stringify(j),
+                success: function (data, status) {
+                    if (status = !'success') {
+                        $('#addGrade_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
+                        button.button('reset');
+                        return;
+                    }
+
+                    if (data.errorMessages != null) {
+                        if (data.errors != null) {
+                            data.errorMessages += '</br></br>'
+                            for (var key in data.errors) {
+                                var error = data.errors[key];
+                                data.errorMessages += error.path + ' : ' + error.kind + '</br>';
+                            }
+                        }
+                        $('#addGrade_errorMessage').html(data.errorMessages).fadeIn();
+                        button.button('reset');
+                        return;
+                    }
+
+                    console.log(data);
+                    $("#addGradeModal input").prop('disabled', true);
+                    $('#addGrade_errorMessage').fadeOut();
+                    $('#addGrade_successMessage').fadeIn();
+
+
+                    var gradeTbody = '';
+                    data.result.grades.forEach(function (grade) {
+                        var date = grade.date;
+                        var datestr = date.replace('T', ' ').slice(0, 16);
+                        gradeTbody += '<tr id="g' + grade._id + '" data-_id=' + grade._id + '>';
+                        gradeTbody += '<td data-datetd= "' + grade.date + '">' + datestr + '</td>';
+                        gradeTbody += '<td data-gradetd="' + grade.grade + '">' + grade.grade + '</td>';
+                        gradeTbody += '<td data-scoretd="' + grade.score + '">' + grade.score + '</td>';
+                        gradeTbody += '<td><button type="button" class="btn btn-warning editGradeModalBtn" >Update</button></td>';
+                        gradeTbody += '<td><button type="button" class="btn btn-danger deleteGradeModalBtn" >Delete</button></td>';
+                        gradeTbody += '</tr>';
+                    })
+                    $('#readModal tbody').html(gradeTbody);
+
+                    $('.editGradeModalBtn').click(function () {
+                        var button = $(this);
+                        var tr = button.closest("tr");
+
+                        $('#editGradeModal #_id').val(tr.data('_id'));
+                        $('#editGradeModal #input_date').val(tr.find("td").eq(0).data('datetd'));
+                        $('#editGradeModal #input_grade').val(tr.find("td").eq(1).data('gradetd'));
+                        $('#editGradeModal #input_score').val(tr.find("td").eq(2).data('scoretd'));
+
+                        $('#editGrade_successMessage').hide();
+                        $('#editGrade_errorMessage').text('').hide();
+                        $('#editGradeModal').modal("show");
+                    })
+
+                    $('.deleteGradeModalBtn').click(function () {
+                        var button = $(this);
+                        var tr = button.closest("tr");
+                        $('#deleteGradeModal').modal("show");
+                    })
+
+
+//                    var tr=$('#r'+$('.modal-body #old_edit_restaurant_id').val());
+//                    tr.find("th").eq(0).text(data.result.name);
+//                    tr.find("td").eq(0).text(data.result.cuisine);
+//                    tr.find("td").eq(1).text(data.result.borough);
+
+                    button.button('reset');
+                    button.hide();
+                }
+            }).fail(function () {
+                $('#addGrade_errorMessage').fadeOut(100, function () {
+                    $('#addGrade_errorMessage').text('Network Error').fadeIn();
+                });
+                button.button('reset');
+            });
+        });
+        $('#editGradeModalSubmut').click(function () {
+            var button = $(this);
+            button.button('loading');
+
+            var j = {};
+            j._id = $('#editGradeModal .modal-body #_id').val();
+            j.date = $('#editGradeModal .modal-body #input_date').val();
+            j.grade = $('#editGradeModal .modal-body #input_grade').val();
+            j.score = $('#editGradeModal .modal-body #input_score').val();
+
+
+            $.ajax({
+                type: 'PUT',
+                dataType: 'json',
+                contentType: "application/json",
+                url: "rest/restaurant/" + $('.modal-body #read_id').val() + "/grade/"+ j._id,
+                data: JSON.stringify(j),
+                success: function (data, status) {
+                    if (status = !'success') {
+                        $('#editGrade_successMessage').fadeOut();
+                        $('#editGrade_errorMessage').text('AJAX HTTP STATUS FAIL').fadeIn();
+                        button.button('reset');
+                        return;
+                    }
+                    if (data.errorMessages != null) {
+                        if (data.errors != null) {
+                            data.errorMessages += '</br></br>'
+                            for (var key in data.errors) {
+                                var error = data.errors[key];
+                                data.errorMessages += error.path + ' : ' + error.kind + '</br>';
+                            }
+                        }
+
+                        $('#editGrade_successMessage').fadeOut();
+                        $('#editGrade_errorMessage').html(data.errorMessages).fadeIn();
+                        button.button('reset');
+                        return;
+                    }
+
+                    var tr = $('#g' +  j._id);
+
+
+
+                    var datestr = j.date.replace('T', ' ').slice(0, 16);
+                    if(!j.date){
+                        datestr=new Date().toISOString();
+                    }
+
+
+
+                    tr.find("td").eq(0).text(datestr.replace('T', ' ').slice(0, 16)).data('datetd',datestr);
+                    tr.find("td").eq(1).text(j.grade).data('gradetd',j.grade);
+                    tr.find("td").eq(2).text(j.score).data('scoretd',j.score);
+
+
+                    $('#editGrade_errorMessage').fadeOut();
+                    $('#editGrade_successMessage').fadeOut(100, function () {
+                        $('#editGrade_successMessage').fadeIn();
+                    });
+                    button.button('reset');
+                }
+            }).fail(function () {
+                $('#editGrade_successMessage').fadeOut();
+                $('#editGrade_errorMessage').fadeOut(100, function () {
+                    $('#editGrade_errorMessage').text('Network Error').fadeIn();
+                });
+                button.button('reset');
+            });
+        });
+
+        $(document).on('hidden.bs.modal', '.modal', function () {
+            $('.modal:visible').length && $(document.body).addClass('modal-open');
+        });
+
 
     });
 </script>

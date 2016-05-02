@@ -2,10 +2,13 @@ var mongoose = require('mongoose');
 
 
 var gradeSchema = mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     date: { type: Date, default: Date.now },
     grade: {type: String,required: true, minLength: 1, maxLength: 5},
     score: {type: Number,required: true, min: 0 }
-},{ _id : false });
+}
+    // , {_id: false}
+);
 
 var restaurantSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
