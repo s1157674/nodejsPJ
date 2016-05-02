@@ -586,7 +586,7 @@ router.get('/', function (req, res) {
 });
 
 //GET	    /rest/restaurant	            index       get all
-//DELETE	/rest/restaurants	            clear       destroy all*
+//DELETE	/rest/restaurants	            clear       destroy all
 
 //POST	    /rest/restaurant/create	        create      add one
 //GET	    /rest/restaurant/{_id}	        show        show one
@@ -685,7 +685,7 @@ router.delete('/rest/restaurants', function (req, res) {
         res.end('Connection closed', 200);
     });
 });
-router.post('/rest/restaurant/create', jsonParser, function (req, res) {
+router.post('/rest/restaurant', jsonParser, function (req, res) {
     create(req.body, function (results, errorMessage, err) {
         var j = {};
 
