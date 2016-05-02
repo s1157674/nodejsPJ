@@ -4,8 +4,9 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
 //var MONGODBURL = 'mongodb://ccccccc:23382338@192.168.1.211/nodejsPJ';
-var MONGODBURL = 'mongodb://ccccccc:23382338@ds064718.mlab.com:64718/restaurantrestaurant'; // 500 MB MongoLab (USA)
+//var MONGODBURL = 'mongodb://ccccccc:23382338@ds064718.mlab.com:64718/restaurantrestaurant'; // 500 MB MongoLab (USA)
 //var MONGODBURL = 'mongodb://ccccccc:23382338@l.ikomoe.com/nodejsPJ';
+var MONGODBURL = 'mongodb://l.ikomoe.com/nodejsPJ';
 //var MONGODBURL = 'mongodb://*******:********@192.168.1.211/nodejsPJ'; Masked Username Password for github public
 var assert = require('assert');
 var restaurant = require('../models/restaurant');
